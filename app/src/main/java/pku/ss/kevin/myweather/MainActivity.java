@@ -1,5 +1,6 @@
 package pku.ss.kevin.myweather;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.Time;
@@ -10,11 +11,23 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.zip.GZIPInputStream;
 
 import pku.ss.kevin.util.NetUtil;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private final static String TAG = "MainActivity";
     private ImageView updateImageView;
@@ -33,20 +46,18 @@ public class MainActivity extends ActionBarActivity {
         weekTextView.setText(toWeek(t.weekDay));
 
         updateImageView = (ImageView) findViewById(R.id.title_update_btn);
-        updateImageView.setOnClickListener(listener);
+        updateImageView.setOnClickListener(this);
 
-        int state = NetUtil.getNetworkState(this);
-        Log.d(TAG, Integer.toString(state));
-        switch (state) {
+        switch (NetUtil.getNetworkState(this)) {
             case NetUtil.NETWORK_NONE:
                 Log.d(TAG, "NETWORK_NONE");
-                //break;
+                break;
             case NetUtil.NETWORK_WIFI:
                 Log.d(TAG, "NETWORK_WIFI");
-                //break;
+                break;
             case NetUtil.NETWORK_MOBILE:
                 Log.d(TAG, "NETWORK_MOBILE");
-                //break;
+                break;
         }
     }
 
@@ -71,15 +82,53 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private OnClickListener listener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.title_update_btn:
-                    Log.d(TAG, "update");
-            }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.title_update_btn:
+                SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
+                String cityCode = sharedPreferences.getString("main_city_code", "101010100");
+                Log.d(TAG, "Main City Code: " + cityCode);
+                if (NetUtil.getNetworkState(this) != NetUtil.NETWORK_NONE) {
+                    Log.d(TAG, "网络正常");
+                    queryWeatherCode(cityCode);
+                } else {
+                    Log.d(TAG, "无法连接");
+                    queryWeatherCode(cityCode);
+                    Toast.makeText(MainActivity.this, "无法连接", Toast.LENGTH_LONG).show();
+                }
         }
-    };
+    }
+
+    private void queryWeatherCode(String cityCode) {
+        final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
+        Log.d(TAG, address);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HttpClient httpClient = new DefaultHttpClient();
+                    HttpGet httpGet = new HttpGet(address);
+                    HttpResponse httpResponse = httpClient.execute(httpGet);
+                    if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                        HttpEntity entity = httpResponse.getEntity();
+                        InputStream responseStream = entity.getContent();
+                        responseStream = new GZIPInputStream(responseStream);
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(responseStream));
+                        StringBuilder response = new StringBuilder();
+                        String str;
+                        while ((str = reader.readLine()) != null) {
+                            response.append(str);
+                        }
+                        String responseStr = response.toString();
+                        Log.d(TAG, responseStr);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     private String toWeek(int weekday) {
         switch (weekday) {
