@@ -11,6 +11,8 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import pku.ss.kevin.util.NetUtil;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -23,7 +25,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
 
         Time t = new Time();
         t.setToNow();
@@ -32,6 +34,20 @@ public class MainActivity extends ActionBarActivity {
 
         updateImageView = (ImageView) findViewById(R.id.title_update_btn);
         updateImageView.setOnClickListener(listener);
+
+        int state = NetUtil.getNetworkState(this);
+        Log.d(TAG, Integer.toString(state));
+        switch (state) {
+            case NetUtil.NETWORK_NONE:
+                Log.d(TAG, "NETWORK_NONE");
+                //break;
+            case NetUtil.NETWORK_WIFI:
+                Log.d(TAG, "NETWORK_WIFI");
+                //break;
+            case NetUtil.NETWORK_MOBILE:
+                Log.d(TAG, "NETWORK_MOBILE");
+                //break;
+        }
     }
 
     @Override
@@ -60,7 +76,7 @@ public class MainActivity extends ActionBarActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.title_update_btn:
-                    //Log.i(TAG, "update");
+                    Log.d(TAG, "update");
             }
         }
     };

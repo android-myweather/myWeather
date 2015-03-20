@@ -24,7 +24,7 @@ public class NetUtil {
         //Mobile
         state = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
         if (state == State.CONNECTED && state == State.CONNECTING) {
-            return NETWORK_WIFI;
+            return NETWORK_MOBILE;
         }
 
         return NETWORK_NONE;
