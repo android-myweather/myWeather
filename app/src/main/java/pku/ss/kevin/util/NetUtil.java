@@ -17,13 +17,13 @@ public class NetUtil {
 
         //Wifi
         State state = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-        if (state == State.CONNECTED && state == State.CONNECTING) {
+        if (state == State.CONNECTED || state == State.CONNECTING) {
             return NETWORK_WIFI;
         }
 
         //Mobile
         state = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
-        if (state == State.CONNECTED && state == State.CONNECTING) {
+        if (state == State.CONNECTED || state == State.CONNECTING) {
             return NETWORK_MOBILE;
         }
 

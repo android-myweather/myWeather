@@ -48,17 +48,20 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         updateImageView = (ImageView) findViewById(R.id.title_update_btn);
         updateImageView.setOnClickListener(this);
 
-        switch (NetUtil.getNetworkState(this)) {
-            case NetUtil.NETWORK_NONE:
-                Log.d(TAG, "NETWORK_NONE");
-                break;
-            case NetUtil.NETWORK_WIFI:
-                Log.d(TAG, "NETWORK_WIFI");
-                break;
-            case NetUtil.NETWORK_MOBILE:
-                Log.d(TAG, "NETWORK_MOBILE");
-                break;
-        }
+        Toast.makeText(MainActivity.this, Integer.toString(NetUtil.getNetworkState(this)), Toast.LENGTH_LONG).show();
+
+//        switch (NetUtil.getNetworkState(this)) {
+//            case NetUtil.NETWORK_NONE:
+//                Log.d(TAG, "NETWORK_NONE");
+//                break;
+//            case NetUtil.NETWORK_WIFI:
+//                Log.d(TAG, "NETWORK_WIFI");
+//                break;
+//            case NetUtil.NETWORK_MOBILE:
+//                Log.d(TAG, "NETWORK_MOBILE");
+//                break;
+//    }
+
     }
 
     @Override
