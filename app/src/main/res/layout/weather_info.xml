@@ -82,7 +82,7 @@
                 android:textSize="40sp" />
 
             <TextView
-                android:id="@+id/time"
+                android:id="@+id/update_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/city"
@@ -95,7 +95,7 @@
                 android:id="@+id/humidity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/time"
+                android:layout_below="@id/update_time"
                 android:layout_marginTop="2dp"
                 android:text="湿度:75%"
                 android:textColor="#ffffff"
@@ -130,7 +130,7 @@
                 android:layout_toLeftOf="@id/air_image" />
 
             <TextView
-                android:id="@+id/air_index"
+                android:id="@+id/pm25"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="100"
@@ -140,10 +140,10 @@
                 android:layout_centerVertical="true" />
 
             <TextView
-                android:id="@+id/air_condition"
+                android:id="@+id/quality"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="重度污染"
+                android:text="污染"
                 android:textColor="#ffffff"
                 android:textSize="22sp"
                 android:layout_alignParentBottom="true"
@@ -185,7 +185,7 @@
             android:id="@+id/temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-2℃~7℃"
+            android:text="℃"
             android:textColor="#ffffff"
             android:textSize="30sp"
             android:layout_alignLeft="@id/today"
@@ -205,7 +205,7 @@
             android:id="@+id/wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="微风"
+            android:text="风"
             android:textColor="#ffffff"
             android:textSize="20sp"
             android:layout_alignLeft="@id/today"
