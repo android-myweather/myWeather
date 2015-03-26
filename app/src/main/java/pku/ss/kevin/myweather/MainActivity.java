@@ -1,14 +1,12 @@
 package pku.ss.kevin.myweather;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -29,82 +27,95 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.zip.GZIPInputStream;
 
+import pku.ss.kevin.pku.ss.kevin.bean.TodayWeather;
 import pku.ss.kevin.util.NetUtil;
 
 
-public class MainActivity extends ActionBarActivity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener {
 
-    private final static String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
+
+    private static final int UPDATE_TODAY_WEATHER = 1;
 
     private static Handler handler;
 
-    private ImageView updateIV;
+    private ImageView cityManagerImg;
+    private ImageView updateImg;
+    private TextView titleCityTv;
 
-    private TextView cityTV;
-    private TextView updateTimeTV;
-    private TextView humidityTV;
-    private TextView pm25TV;
-    private TextView qualityTV;
-    private TextView weekTV;
-    private TextView temperatureTV;
-    private TextView windTV;
+    private TextView cityTv;
+    private TextView updateTimeTv;
+    private TextView humidityTv;
+    private ImageView airImg;
+    private TextView pm25Tv;
+    private TextView qualityTv;
+    private ImageView weatherImg;
+    private TextView dateTv;
+    private TextView temperatureTv;
+    private TextView weatherTv;
+    private TextView windTv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
-        //getSupportActionBar().hide();
 
-        Time t = new Time();
-        t.setToNow();
-        weekTV = (TextView) findViewById(R.id.week);
-        weekTV.setText(toWeek(t.weekDay));
+        initView();
 
-        updateIV = (ImageView) findViewById(R.id.title_update_btn);
-        updateIV.setOnClickListener(this);
+        cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
+        cityManagerImg.setOnClickListener(this);
 
-        //cityTV = (TextView) findViewById(R.id.city);
-        //cityTV.setText("11111");
+        updateImg = (ImageView) findViewById(R.id.title_update);
+        updateImg.setOnClickListener(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    private void initView() {
+        titleCityTv = (TextView) findViewById(R.id.title_city_name);
+        cityTv = (TextView) findViewById(R.id.city);
+        updateTimeTv = (TextView) findViewById(R.id.update_time);
+        humidityTv = (TextView) findViewById(R.id.humidity);
+        airImg = (ImageView) findViewById(R.id.air_image);
+        pm25Tv = (TextView) findViewById(R.id.pm25);
+        qualityTv = (TextView) findViewById(R.id.quality);
+        weatherImg = (ImageView) findViewById(R.id.weather_image);
+        dateTv = (TextView) findViewById(R.id.date);
+        temperatureTv = (TextView) findViewById(R.id.temperature);
+        weatherTv = (TextView) findViewById(R.id.weather);
+        windTv = (TextView) findViewById(R.id.wind);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        titleCityTv.setText("天气");
+        cityTv.setText("N/A");
+        updateTimeTv.setText("N/A");
+        humidityTv.setText("N/A");
+        pm25Tv.setText("N/A");
+        qualityTv.setText("N/A");
+        dateTv.setText("N/A");
+        temperatureTv.setText("N/A");
+        weatherTv.setText("N/A");
+        windTv.setText("N/A");
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.title_update_btn:
+            case R.id.title_city_manager:
+                Intent intent = new Intent(MainActivity.this, CityManager.class);
+                startActivity(intent);
+                break;
+            case R.id.title_update:
                 SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
                 String cityCode = sharedPreferences.getString("main_city_code", "101010100");
                 if (NetUtil.getNetworkState(this) != NetUtil.NETWORK_NONE) {
-                    Log.d(TAG, "网络正常");
-                    updateWeather(cityCode);
+                    updateTodayWeather(cityCode);
                 } else {
-                    Log.d(TAG, "无法连接");
-                    Toast.makeText(MainActivity.this, "无法连接", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
                 }
+                break;
         }
     }
 
-    private void updateWeather(String cityCode) {
+    private void updateTodayWeather(String cityCode) {
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
         Log.d(TAG, address);
 
@@ -113,24 +124,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what) {
-                    case 0:
-                        Weather weather = (Weather) msg.obj;
-
-                        cityTV = (TextView) findViewById(R.id.city);
-                        updateTimeTV = (TextView) findViewById(R.id.update_time);
-                        humidityTV = (TextView) findViewById(R.id.humidity);
-                        pm25TV = (TextView) findViewById(R.id.pm25);
-                        qualityTV = (TextView) findViewById(R.id.quality);
-                        temperatureTV = (TextView) findViewById(R.id.temperature);
-                        windTV = (TextView) findViewById(R.id.wind);
-
-                        cityTV.setText(weather.getCity());
-                        updateTimeTV.setText("今天" + weather.getUpdateTime() + "发布");
-                        humidityTV.setText("湿度" + weather.getHumidity());
-                        pm25TV.setText(weather.getPm25());
-                        qualityTV.setText(weather.getQuality());
-                        temperatureTV.setText(weather.getTemperature() + "℃");
-                        windTV.setText(weather.getWind());
+                    case UPDATE_TODAY_WEATHER:
+                        updateWeatherView((TodayWeather) msg.obj);
+                        Toast.makeText(MainActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         break;
@@ -160,13 +156,16 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                         String responseStr = response.toString();
 
                         //解析XML获取天气状态
-                        Weather weather = queryWeather(responseStr);
+                        TodayWeather todayWeather = queryTodayWeather(responseStr);
+                        //Log.d(TAG, todayWeather.toString());
 
                         //向主线程发送消息
-                        Message msg = new Message();
-                        msg.obj = weather;
-                        msg.what = 0;
-                        handler.sendMessage(msg);
+                        if (todayWeather != null) {
+                            Message msg = new Message();
+                            msg.obj = todayWeather;
+                            msg.what = UPDATE_TODAY_WEATHER;
+                            handler.sendMessage(msg);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -175,33 +174,92 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         }).start();
     }
 
-    private Weather queryWeather(String xmlData) {
-        Weather weather = new Weather();
+    private void updateWeatherView(TodayWeather todayWeather) {
+        titleCityTv.setText(todayWeather.getCity() + "天气");
+        cityTv.setText(todayWeather.getCity());
+        updateTimeTv.setText("今天" + todayWeather.getUpdateTime() + "发布");
+        humidityTv.setText("湿度:" + todayWeather.getHumidity());
+        pm25Tv.setText(todayWeather.getPm25());
+        qualityTv.setText(todayWeather.getQuality());
+        dateTv.setText(todayWeather.getDate().substring(3));
+        temperatureTv.setText(todayWeather.getLow() + "~" + todayWeather.getHigh());
+        weatherTv.setText(todayWeather.getDayType() + "转" + todayWeather.getNightType());
+        windTv.setText(todayWeather.getWindDirection() + " " + todayWeather.getWindStrength());
+    }
+
+    private TodayWeather queryTodayWeather(String xmlData) {
+        TodayWeather todayWeather = null;
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser xmlPullParser = factory.newPullParser();
             xmlPullParser.setInput(new StringReader(xmlData));
             int eventType = xmlPullParser.getEventType();
-            //Log.d(TAG, "Parse XML");
+            int fengliCount = 0;
+            int fengxiangCount = 0;
+            int dateCount = 0;
+            int lowCount = 0;
+            int highCount = 0;
+            int typeCount = 0;
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 switch (eventType) {
                     case XmlPullParser.START_DOCUMENT:
                         break;
                     case XmlPullParser.START_TAG:
-                        if (xmlPullParser.getName().equals("city")) {
-                            weather.setCity(xmlPullParser.nextText());
-                        } else if (xmlPullParser.getName().equals("updatetime")) {
-                            weather.setUpdateTime(xmlPullParser.nextText());
-                        } else if (xmlPullParser.getName().equals("wendu")) {
-                            weather.setTemperature(xmlPullParser.nextText());
-                        } else if (xmlPullParser.getName().equals("shidu")) {
-                            weather.setHumidity(xmlPullParser.nextText());
-                        } else if (xmlPullParser.getName().equals("fengli")) {
-                            weather.setWind(xmlPullParser.nextText());
-                        } else if (xmlPullParser.getName().equals("pm25")) {
-                            weather.setPm25(xmlPullParser.nextText());
-                        } else if (xmlPullParser.getName().equals("quality")) {
-                            weather.setQuality(xmlPullParser.nextText());
+                        String tag = xmlPullParser.getName();
+                        switch (tag) {
+                            case "resp":
+                                todayWeather = new TodayWeather();
+                                break;
+                            case "city":
+                                todayWeather.setCity(xmlPullParser.nextText());
+                                break;
+                            case "updatetime":
+                                todayWeather.setUpdateTime(xmlPullParser.nextText());
+                                break;
+                            case "wendu":
+                                todayWeather.setTemperature(xmlPullParser.nextText());
+                                break;
+                            case "fengli":
+                                if (fengliCount == 0)
+                                    todayWeather.setWindStrength(xmlPullParser.nextText());
+                                fengliCount++;
+                                break;
+                            case "shidu":
+                                todayWeather.setHumidity(xmlPullParser.nextText());
+                                break;
+                            case "fengxiang":
+                                if (fengxiangCount == 0)
+                                    todayWeather.setWindDirection(xmlPullParser.nextText());
+                                fengxiangCount++;
+                                break;
+                            case "pm25":
+                                todayWeather.setPm25(xmlPullParser.nextText());
+                                break;
+                            case "quality":
+                                todayWeather.setQuality(xmlPullParser.nextText());
+                                break;
+                            case "date":
+                                if (dateCount == 0)
+                                    todayWeather.setDate(xmlPullParser.nextText());
+                                dateCount++;
+                                break;
+                            case "low":
+                                if (lowCount == 0)
+                                    todayWeather.setLow(xmlPullParser.nextText().substring(3));
+                                lowCount++;
+                                break;
+                            case "high":
+                                if (highCount == 0)
+                                    todayWeather.setHigh(xmlPullParser.nextText().substring(3));
+                                highCount++;
+                                break;
+                            case "type":
+                                if (typeCount == 0)
+                                    todayWeather.setDayType(xmlPullParser.nextText());
+                                else if (typeCount == 1)
+                                    todayWeather.setNightType(xmlPullParser.nextText());
+                                typeCount++;
+                                break;
                         }
                         break;
                     case XmlPullParser.END_TAG:
@@ -212,27 +270,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return weather;
-    }
-
-    private String toWeek(int weekday) {
-        switch (weekday) {
-            case 1:
-                return "星期一";
-            case 2:
-                return "星期二";
-            case 3:
-                return "星期三";
-            case 4:
-                return "星期四";
-            case 5:
-                return "星期五";
-            case 6:
-                return "星期六";
-            case 0:
-                return "星期天";
-            default:
-                return "";
-        }
+        return todayWeather;
     }
 }

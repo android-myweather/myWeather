@@ -36,7 +36,7 @@
             android:textSize="22.0sp" />
 
         <ImageView
-            android:id="@+id/title_update_btn"
+            android:id="@+id/title_update"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_alignParentRight="true"
@@ -47,7 +47,7 @@
             android:id="@+id/title_share"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_toLeftOf="@id/title_update_btn"
+            android:layout_toLeftOf="@id/title_update"
             android:src="@drawable/title_share" />
 
         <ImageView
@@ -120,7 +120,7 @@
                 android:src="@drawable/biz_plugin_weather_0_50" />
 
             <TextView
-                android:id="@+id/pm2.5"
+                android:id="@+id/pm25_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -136,7 +136,7 @@
                 android:text="100"
                 android:textColor="#ffffff"
                 android:textSize="26sp"
-                android:layout_alignLeft="@id/pm2.5"
+                android:layout_alignLeft="@id/pm25_text"
                 android:layout_centerVertical="true" />
 
             <TextView
@@ -147,7 +147,7 @@
                 android:textColor="#ffffff"
                 android:textSize="22sp"
                 android:layout_alignParentBottom="true"
-                android:layout_alignLeft="@id/pm2.5" />
+                android:layout_alignLeft="@id/pm25_text" />
 
 
         </RelativeLayout>
@@ -171,10 +171,10 @@
             android:layout_alignTop="@id/weather_image" />
 
         <TextView
-            android:id="@+id/week"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="星期"
+            android:text="星期一"
             android:textColor="#ffffff"
             android:textSize="20sp"
             android:layout_marginLeft="5dp"
@@ -185,9 +185,9 @@
             android:id="@+id/temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10℃"
+            android:text="-5℃~10℃"
             android:textColor="#ffffff"
-            android:textSize="30sp"
+            android:textSize="25sp"
             android:layout_alignLeft="@id/today"
             android:layout_below="@id/today" />
 
@@ -205,12 +205,11 @@
             android:id="@+id/wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="微风"
+            android:text="微风 3-4级"
             android:textColor="#ffffff"
             android:textSize="20sp"
             android:layout_alignLeft="@id/today"
             android:layout_below="@id/weather" />
-
 
     </RelativeLayout>
 
