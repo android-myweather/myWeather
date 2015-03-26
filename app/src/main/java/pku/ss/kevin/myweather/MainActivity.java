@@ -27,13 +27,13 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.zip.GZIPInputStream;
 
-import pku.ss.kevin.pku.ss.kevin.bean.TodayWeather;
+import pku.ss.kevin.bean.TodayWeather;
 import pku.ss.kevin.util.NetUtil;
 
 
 public class MainActivity extends Activity implements OnClickListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MyAPP";
 
     private static final int UPDATE_TODAY_WEATHER = 1;
 
@@ -60,6 +60,7 @@ public class MainActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
+        Log.d(TAG, "MainActivity->onCreate");
 
         initView();
 

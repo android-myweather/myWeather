@@ -1,8 +1,5 @@
-package pku.ss.kevin.pku.ss.kevin.bean;
+package pku.ss.kevin.bean;
 
-/**
- * Created by Kevin on 2015/3/20.
- */
 public class TodayWeather {
     private String city;
     private String updateTime;
