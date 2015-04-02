@@ -4,9 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 
-/**
- * Created by Kevin on 2015/3/20.
- */
 public class NetUtil {
     public static final int NETWORK_NONE = 0;
     public static final int NETWORK_WIFI = 1;

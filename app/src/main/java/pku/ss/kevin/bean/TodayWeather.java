@@ -2,7 +2,7 @@ package pku.ss.kevin.bean;
 
 import java.io.Serializable;
 
-public class TodayWeather implements Serializable{
+public class TodayWeather implements Serializable {
     private String city;
     private String updateTime;
     private String temperature;
@@ -16,6 +16,22 @@ public class TodayWeather implements Serializable{
     private String low;
     private String dayType;
     private String nightType;
+
+    public TodayWeather() {
+        city = "N/A";
+        updateTime = "N/A";
+        temperature = "N/A";
+        humidity = "N/A";
+        pm25 = "N/A";
+        quality = "N/A";
+        windDirection = "N/A";
+        windStrength = "N/A";
+        date = "N/A";
+        high = "N/A";
+        low = "N/A";
+        dayType = "N/A";
+        nightType = "N/A";
+    }
 
     @Override
     public String toString() {

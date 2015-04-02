@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,21 +30,16 @@ import java.util.zip.GZIPInputStream;
 import pku.ss.kevin.bean.TodayWeather;
 import pku.ss.kevin.util.NetUtil;
 
-
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity {
 
     private static final String TAG = "MyWeather";
 
     private static final int UPDATE_TODAY_WEATHER = 1;
 
     private static Handler handler;
+    private String currentCity;
 
-    private TodayWeather todayWeather;
-
-    private ImageView cityManagerImg;
-    private ImageView updateImg;
     private TextView titleCityTv;
-
     private TextView cityTv;
     private TextView updateTimeTv;
     private TextView humidityTv;
@@ -60,60 +54,46 @@ public class MainActivity extends Activity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "MainActivity->onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
         initView();
 
-        Intent intent = getIntent();
-        if (intent.getSerializableExtra("TodayWeather") != null) {
-            this.todayWeather = (TodayWeather) intent.getSerializableExtra("TodayWeather");
-            Log.d(TAG, "MainActivity Get " + this.todayWeather.getCity());
-            updateTodayWeatherView(this.todayWeather);
+        currentCity = "101010100";
+        ImageView cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
+        cityManagerImg.setOnClickListener(listener);
+
+        ImageView updateImg = (ImageView) findViewById(R.id.title_update);
+        updateImg.setOnClickListener(listener);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            currentCity = data.getStringExtra("city");
+            Log.d(TAG, currentCity);
+            updateTodayWeather(currentCity);
         }
-
-        cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
-        cityManagerImg.setOnClickListener(this);
-
-        updateImg = (ImageView) findViewById(R.id.title_update);
-        updateImg.setOnClickListener(this);
     }
 
-    @Override
-    protected void onStart() {
-        Log.d(TAG, "MainActivity->onStart");
-        super.onStart();
-    }
-
-    @Override
-    protected void onRestart() {
-        Log.d(TAG, "MainActivity->onRestart");
-        super.onRestart();
-    }
-
-    @Override
-    protected void onResume() {
-        Log.d(TAG, "MainActivity->onResume");
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-        Log.d(TAG, "MainActivity->onStop");
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.d(TAG, "MainActivity->onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        Log.d(TAG, "MainActivity->onPause");
-        super.onPause();
-    }
+    private OnClickListener listener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.title_city_manager:
+                    Intent intent = new Intent(MainActivity.this, CityManager.class);
+                    startActivityForResult(intent, 1);
+                    break;
+                case R.id.title_update:
+                    if (NetUtil.getNetworkState(MainActivity.this) != NetUtil.NETWORK_NONE) {
+                        updateTodayWeather(currentCity);
+                    } else {
+                        Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+            }
+        }
+    };
 
     private void initView() {
         titleCityTv = (TextView) findViewById(R.id.title_city_name);
@@ -129,7 +109,7 @@ public class MainActivity extends Activity implements OnClickListener {
         weatherTv = (TextView) findViewById(R.id.weather);
         windTv = (TextView) findViewById(R.id.wind);
 
-        titleCityTv.setText("天气");
+        titleCityTv.setText("N/A");
         cityTv.setText("N/A");
         updateTimeTv.setText("N/A");
         humidityTv.setText("N/A");
@@ -139,26 +119,6 @@ public class MainActivity extends Activity implements OnClickListener {
         temperatureTv.setText("N/A");
         weatherTv.setText("N/A");
         windTv.setText("N/A");
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.title_city_manager:
-                Intent intent = new Intent(MainActivity.this, CityManager.class);
-                intent.putExtra("TodayWeather", this.todayWeather);
-                startActivity(intent);
-                break;
-            case R.id.title_update:
-                SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-                String cityCode = sharedPreferences.getString("main_city_code", "101010100");
-                if (NetUtil.getNetworkState(this) != NetUtil.NETWORK_NONE) {
-                    updateTodayWeather(cityCode);
-                } else {
-                    Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
-                }
-                break;
-        }
     }
 
     private void updateTodayWeather(String cityCode) {
@@ -226,10 +186,15 @@ public class MainActivity extends Activity implements OnClickListener {
         updateTimeTv.setText("今天" + todayWeather.getUpdateTime() + "发布");
         humidityTv.setText("湿度:" + todayWeather.getHumidity());
         pm25Tv.setText(todayWeather.getPm25());
+
+        Log.d(TAG, Integer.toString(getAirImg(todayWeather.getQuality())));
+        airImg.setImageResource(getAirImg(todayWeather.getQuality()));
+
         qualityTv.setText(todayWeather.getQuality());
         dateTv.setText(todayWeather.getDate().substring(2));
         temperatureTv.setText(todayWeather.getLow() + "~" + todayWeather.getHigh());
         weatherTv.setText(todayWeather.getDayType() + "转" + todayWeather.getNightType());
+        weatherImg.setImageResource(getWeatherImg(todayWeather.getDayType()));
         windTv.setText(todayWeather.getWindDirection() + " " + todayWeather.getWindStrength());
     }
 
@@ -316,7 +281,71 @@ public class MainActivity extends Activity implements OnClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.todayWeather = todayWeather;
         return todayWeather;
     }
+
+    private int getAirImg(String airQuality) {
+        switch (airQuality) {
+            case "优":
+                return R.drawable.biz_plugin_weather_0_50;
+            case "良":
+                return R.drawable.biz_plugin_weather_51_100;
+            case "轻度污染":
+                return R.drawable.biz_plugin_weather_101_150;
+            case "中度污染":
+                return R.drawable.biz_plugin_weather_151_200;
+            case "重度污染":
+                return R.drawable.biz_plugin_weather_201_300;
+            case "严重污染":
+                return R.drawable.biz_plugin_weather_greater_300;
+        }
+        return R.drawable.biz_plugin_weather_0_50;
+    }
+
+    private int getWeatherImg(String weather) {
+        switch (weather) {
+            case "暴雪":
+                return R.drawable.biz_plugin_weather_baoxue;
+            case "暴雨":
+                return R.drawable.biz_plugin_weather_baoyu;
+            case "大暴雨":
+                return R.drawable.biz_plugin_weather_dabaoyu;
+            case "大雪":
+                return R.drawable.biz_plugin_weather_daxue;
+            case "大雨":
+                return R.drawable.biz_plugin_weather_dayu;
+            case "多云":
+                return R.drawable.biz_plugin_weather_duoyun;
+            case "雷阵雨":
+                return R.drawable.biz_plugin_weather_leizhenyu;
+            case "雷阵雨冰雹":
+                return R.drawable.biz_plugin_weather_leizhenyubingbao;
+            case "晴":
+                return R.drawable.biz_plugin_weather_qing;
+            case "沙尘暴":
+                return R.drawable.biz_plugin_weather_shachenbao;
+            case "特大暴雨":
+                return R.drawable.biz_plugin_weather_tedabaoyu;
+            case "雾":
+                return R.drawable.biz_plugin_weather_wu;
+            case "小雪":
+                return R.drawable.biz_plugin_weather_xiaoxue;
+            case "小雨":
+                return R.drawable.biz_plugin_weather_xiaoyu;
+            case "阴":
+                return R.drawable.biz_plugin_weather_yin;
+            case "雨夹雪":
+                return R.drawable.biz_plugin_weather_yujiaxue;
+            case "阵雪":
+                return R.drawable.biz_plugin_weather_zhenxue;
+            case "阵雨":
+                return R.drawable.biz_plugin_weather_zhenyu;
+            case "中雪":
+                return R.drawable.biz_plugin_weather_zhongxue;
+            case "中雨":
+                return R.drawable.biz_plugin_weather_zhongyu;
+        }
+        return R.drawable.biz_plugin_weather_qing;
+    }
+
 }

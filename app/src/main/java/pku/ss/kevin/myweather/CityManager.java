@@ -1,10 +1,7 @@
 package pku.ss.kevin.myweather;
 
 import android.app.Activity;
-import android.app.Application;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,47 +16,41 @@ import java.util.List;
 import pku.ss.kevin.app.MyApplication;
 import pku.ss.kevin.bean.City;
 import pku.ss.kevin.bean.TodayWeather;
-import pku.ss.kevin.util.NetUtil;
 
 
 public class CityManager extends Activity implements View.OnClickListener {
 
     private static final String TAG = "MyWeather";
 
-    private TodayWeather todayWeather;
-
-    private ListView cityLv;
-    private ImageView backImg;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.city_manager);
-        Intent intent = getIntent();
-        if (intent.getSerializableExtra("TodayWeather") != null) {
-            this.todayWeather = (TodayWeather) intent.getSerializableExtra("TodayWeather");
-            Log.d(TAG, "CityManager Get " + this.todayWeather.getCity());
-        }
 
-        backImg = (ImageView) findViewById(R.id.title_back);
+        ImageView backImg = (ImageView) findViewById(R.id.title_back);
         backImg.setOnClickListener(this);
 
         MyApplication myApp = MyApplication.getInstance();
-        List<City> list = myApp.getCityDB().getAllCity();
+        final List<City> list = myApp.getCityDB().getAllCity();
+
         int len = list.size();
         final String[] cities = new String[len];
         for (int i = 0; i < len; i++) {
-            cities[i] = list.get(i).getProvince() + " " + list.get(i).getCity();
+            cities[i] = list.get(i).getCity();
+            //cities[i] = list.get(i).getProvince() + " " + list.get(i).getCity();
         }
 
-        cityLv = (ListView) findViewById(R.id.city_list);
+        ListView cityLv = (ListView) findViewById(R.id.city_list);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(CityManager.this, android.R.layout.simple_list_item_1, cities);
         cityLv.setAdapter(adapter);
         cityLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                City city = findCityByName(list, cities[position]);
+                intent.putExtra("city", city.getNumber());
+                setResult(RESULT_OK, intent);
                 finish();
-                Toast.makeText(CityManager.this, "你点击了" + cities[position], Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -71,5 +62,13 @@ public class CityManager extends Activity implements View.OnClickListener {
                 finish();
                 break;
         }
+    }
+
+    private City findCityByName(List<City> list, String name) {
+        for (City city : list) {
+            if (city.getCity().equals(name))
+                return city;
+        }
+        return null;
     }
 }
