@@ -6,48 +6,47 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
-import pku.ss.kevin.bean.City;
 import pku.ss.kevin.db.CityDB;
 
 public class MyApplication extends Application {
 
-    private static final String TAG = "MyAPP";
+    private static final String TAG = "MyWeather";
 
-    private static Application mApplication;
-
-    private CityDB mCityDB;
-    private List<City> mCityList;
+    private static MyApplication mApplication;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "MyApplication->onCreate");
         mApplication = this;
-
-        mCityDB = openCityDB();
-        initCityList();
+        loadCityDB();
     }
 
-    public static Application getInstance() {
+    public static MyApplication getInstance() {
         return mApplication;
     }
 
-    private CityDB openCityDB() {
-        String path = "/data" + Environment.getDataDirectory().getAbsolutePath()
-                + File.separator + getPackageName() + File.separator + "databases"
+    public CityDB getCityDB() {
+        return new CityDB(this);
+    }
+
+    private void loadCityDB() {
+        String path = "/data"
+                + Environment.getDataDirectory().getAbsolutePath()
+                + File.separator + getPackageName()
+                + File.separator + "databases"
                 + File.separator + CityDB.CITY_DB_NAME;
-        Log.d(TAG, path);
         File db = new File(path);
         if (!db.exists()) {
-            Log.d(TAG, "db does noe exist");
+            Log.d(TAG, "city.db does noe exist");
             try {
                 InputStream is = getAssets().open("city.db");
+                db.getParentFile().mkdirs();
                 FileOutputStream fos = new FileOutputStream(db);
-                int len = -1;
+
+                int len;
                 byte[] buffer = new byte[1024];
                 while ((len = is.read(buffer)) != -1) {
                     fos.write(buffer, 0, len);
@@ -55,30 +54,10 @@ public class MyApplication extends Application {
                 }
                 fos.close();
                 is.close();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(0);
             }
         }
-        return new CityDB(this, path);
-    }
-
-    private void initCityList() {
-        mCityList = new ArrayList<>();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                prepareCityList();
-            }
-        }).start();
-    }
-
-    private boolean prepareCityList() {
-        mCityList = mCityDB.getAllCity();
-        for (City city : mCityList) {
-            String cityName = city.getCity();
-            Log.d(TAG, cityName);
-        }
-        return true;
     }
 }

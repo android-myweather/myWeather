@@ -1,6 +1,8 @@
 package pku.ss.kevin.bean;
 
-public class TodayWeather {
+import java.io.Serializable;
+
+public class TodayWeather implements Serializable{
     private String city;
     private String updateTime;
     private String temperature;

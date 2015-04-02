@@ -14,23 +14,24 @@ public class CityDB {
     private static final String CITY_TABLE_NAME = "city";
     private SQLiteDatabase db;
 
-    public CityDB(Context context, String path) {
+    public CityDB(Context context) {
         db = context.openOrCreateDatabase(CITY_DB_NAME, Context.MODE_PRIVATE, null);
     }
 
     public List<City> getAllCity() {
-        List<City> list = new ArrayList<City>();
+        List<City> list = new ArrayList<>();
         Cursor c = db.rawQuery("select * from " + CITY_TABLE_NAME, null);
         while (c.moveToNext()) {
             String province = c.getString(c.getColumnIndex("province"));
             String city = c.getString(c.getColumnIndex("city"));
             String number = c.getString(c.getColumnIndex("number"));
-            String firstPY = c.getString(c.getColumnIndex("firstPY"));
-            String allPY = c.getString(c.getColumnIndex("allPY"));
-            String allFirstPY = c.getString(c.getColumnIndex("allFirstPY"));
+            String firstPY = c.getString(c.getColumnIndex("firstpy"));
+            String allPY = c.getString(c.getColumnIndex("allpy"));
+            String allFirstPY = c.getString(c.getColumnIndex("allfirstpy"));
             City item = new City(province, city, number, firstPY, allPY, allFirstPY);
             list.add(item);
         }
+        c.close();
         return list;
     }
 }

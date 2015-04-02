@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,11 +34,13 @@ import pku.ss.kevin.util.NetUtil;
 
 public class MainActivity extends Activity implements OnClickListener {
 
-    private static final String TAG = "MyAPP";
+    private static final String TAG = "MyWeather";
 
     private static final int UPDATE_TODAY_WEATHER = 1;
 
     private static Handler handler;
+
+    private TodayWeather todayWeather;
 
     private ImageView cityManagerImg;
     private ImageView updateImg;
@@ -55,20 +58,61 @@ public class MainActivity extends Activity implements OnClickListener {
     private TextView weatherTv;
     private TextView windTv;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "MainActivity->onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
-        Log.d(TAG, "MainActivity->onCreate");
-
         initView();
+
+        Intent intent = getIntent();
+        if (intent.getSerializableExtra("TodayWeather") != null) {
+            this.todayWeather = (TodayWeather) intent.getSerializableExtra("TodayWeather");
+            Log.d(TAG, "MainActivity Get " + this.todayWeather.getCity());
+            updateTodayWeatherView(this.todayWeather);
+        }
 
         cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
         cityManagerImg.setOnClickListener(this);
 
         updateImg = (ImageView) findViewById(R.id.title_update);
         updateImg.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "MainActivity->onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d(TAG, "MainActivity->onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "MainActivity->onResume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "MainActivity->onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "MainActivity->onDestroy");
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "MainActivity->onPause");
+        super.onPause();
     }
 
     private void initView() {
@@ -102,6 +146,7 @@ public class MainActivity extends Activity implements OnClickListener {
         switch (v.getId()) {
             case R.id.title_city_manager:
                 Intent intent = new Intent(MainActivity.this, CityManager.class);
+                intent.putExtra("TodayWeather", this.todayWeather);
                 startActivity(intent);
                 break;
             case R.id.title_update:
@@ -126,7 +171,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case UPDATE_TODAY_WEATHER:
-                        updateWeatherView((TodayWeather) msg.obj);
+                        updateTodayWeatherView((TodayWeather) msg.obj);
                         Toast.makeText(MainActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
                         break;
                     default:
@@ -175,14 +220,14 @@ public class MainActivity extends Activity implements OnClickListener {
         }).start();
     }
 
-    private void updateWeatherView(TodayWeather todayWeather) {
+    private void updateTodayWeatherView(TodayWeather todayWeather) {
         titleCityTv.setText(todayWeather.getCity() + "天气");
         cityTv.setText(todayWeather.getCity());
         updateTimeTv.setText("今天" + todayWeather.getUpdateTime() + "发布");
         humidityTv.setText("湿度:" + todayWeather.getHumidity());
         pm25Tv.setText(todayWeather.getPm25());
         qualityTv.setText(todayWeather.getQuality());
-        dateTv.setText(todayWeather.getDate().substring(3));
+        dateTv.setText(todayWeather.getDate().substring(2));
         temperatureTv.setText(todayWeather.getLow() + "~" + todayWeather.getHigh());
         weatherTv.setText(todayWeather.getDayType() + "转" + todayWeather.getNightType());
         windTv.setText(todayWeather.getWindDirection() + " " + todayWeather.getWindStrength());
@@ -271,6 +316,7 @@ public class MainActivity extends Activity implements OnClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        this.todayWeather = todayWeather;
         return todayWeather;
     }
 }
