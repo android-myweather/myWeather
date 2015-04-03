@@ -35,11 +35,20 @@
             android:gravity="center"/>
     </RelativeLayout>
 
+    <EditText
+        android:id="@+id/search_city"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="搜索全国城市（拼音）"
+        android:singleLine="true"
+        android:layout_below="@id/current_city"/>
+
+
     <ListView
         android:id="@+id/city_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/current_city">
+        android:layout_below="@id/search_city">
 
     </ListView>
 

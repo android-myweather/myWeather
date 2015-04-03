@@ -82,7 +82,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (requestCode == 1 && resultCode == RESULT_OK) {
             currentCityCode = data.getStringExtra("code");
             currentCityName = data.getStringExtra("name");
-            //Log.d(TAG, currentCityCode);
             updateTodayWeather(currentCityCode);
         }
     }
@@ -206,7 +205,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }).start();
     }
 
-    protected void updateTodayWeatherView(TodayWeather todayWeather) {
+    private void updateTodayWeatherView(TodayWeather todayWeather) {
         titleCityTv.setText(todayWeather.getCity() + "天气");
         cityTv.setText(todayWeather.getCity());
         updateTimeTv.setText("今天" + todayWeather.getUpdateTime() + "发布");
