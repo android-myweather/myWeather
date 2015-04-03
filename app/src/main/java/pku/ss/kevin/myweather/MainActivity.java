@@ -37,7 +37,9 @@ public class MainActivity extends Activity {
     private static final int UPDATE_TODAY_WEATHER = 1;
 
     private static Handler handler;
-    private String currentCity;
+
+    private String currentCityName;
+    private String currentCityCode;
 
     private TextView titleCityTv;
     private TextView cityTv;
@@ -58,7 +60,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.weather_info);
         initView();
 
-        currentCity = "101010100";
+        currentCityCode = "101010100";
         ImageView cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
         cityManagerImg.setOnClickListener(listener);
 
@@ -70,9 +72,9 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            currentCity = data.getStringExtra("city");
-            Log.d(TAG, currentCity);
-            updateTodayWeather(currentCity);
+            currentCityCode = data.getStringExtra("city");
+            Log.d(TAG, currentCityCode);
+            updateTodayWeather(currentCityCode);
         }
     }
 
@@ -82,11 +84,12 @@ public class MainActivity extends Activity {
             switch (v.getId()) {
                 case R.id.title_city_manager:
                     Intent intent = new Intent(MainActivity.this, CityManager.class);
+                    intent.putExtra("","");
                     startActivityForResult(intent, 1);
                     break;
                 case R.id.title_update:
                     if (NetUtil.getNetworkState(MainActivity.this) != NetUtil.NETWORK_NONE) {
-                        updateTodayWeather(currentCity);
+                        updateTodayWeather(currentCityCode);
                     } else {
                         Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
                     }
@@ -186,10 +189,7 @@ public class MainActivity extends Activity {
         updateTimeTv.setText("今天" + todayWeather.getUpdateTime() + "发布");
         humidityTv.setText("湿度:" + todayWeather.getHumidity());
         pm25Tv.setText(todayWeather.getPm25());
-
-        Log.d(TAG, Integer.toString(getAirImg(todayWeather.getQuality())));
         airImg.setImageResource(getAirImg(todayWeather.getQuality()));
-
         qualityTv.setText(todayWeather.getQuality());
         dateTv.setText(todayWeather.getDate().substring(2));
         temperatureTv.setText(todayWeather.getLow() + "~" + todayWeather.getHigh());

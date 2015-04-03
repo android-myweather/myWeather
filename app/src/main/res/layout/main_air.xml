@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/air"
+    android:layout_width="wrap_content"
+    android:layout_height="100dp"
+    android:layout_marginTop="15dp"
+    android:layout_toRightOf="@id/info"
+    android:layout_alignBottom="@id/info"
+    android:layout_alignParentRight="true">
+
+    <ImageView
+        android:id="@+id/air_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/biz_plugin_weather_0_50" />
+
+    <TextView
+        android:id="@+id/pm25_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="PM2.5"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:layout_toLeftOf="@id/air_image" />
+
+    <TextView
+        android:id="@+id/pm25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100"
+        android:textColor="#ffffff"
+        android:textSize="26sp"
+        android:layout_alignLeft="@id/pm25_text"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/quality"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="严重污染"
+        android:textColor="#ffffff"
+        android:textSize="22sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@id/pm25_text" />
+
+
+</RelativeLayout>
