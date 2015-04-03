@@ -8,7 +8,6 @@ import android.os.Message;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +30,7 @@ import java.util.zip.GZIPInputStream;
 import pku.ss.kevin.bean.TodayWeather;
 import pku.ss.kevin.util.NetUtil;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = "MyWeather";
     private static final int UPDATE_TODAY_WEATHER = 1;
@@ -59,27 +58,50 @@ public class MainActivity extends Activity {
         setContentView(R.layout.weather_info);
         initView();
 
-        currentCityCode = "101010100";
         ImageView cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
-        cityManagerImg.setOnClickListener(listener);
+        cityManagerImg.setOnClickListener(this);
 
         ImageView updateImg = (ImageView) findViewById(R.id.title_update);
-        updateImg.setOnClickListener(listener);
+        updateImg.setOnClickListener(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(null);
+        SharedPreferences sharedPreferences = getSharedPreferences("city", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("code", currentCityCode);
+        editor.putString("name", currentCityName);
+        editor.commit();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            currentCityCode = data.getStringExtra("city");
-            Log.d(TAG, currentCityCode);
+            currentCityCode = data.getStringExtra("code");
+            currentCityName = data.getStringExtra("name");
+            //Log.d(TAG, currentCityCode);
             updateTodayWeather(currentCityCode);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.title_city_manager:
+                Intent intent = new Intent(MainActivity.this, CityManager.class);
+                intent.putExtra("name", currentCityName);
+                startActivityForResult(intent, 1);
+                break;
+            case R.id.title_update:
+                if (NetUtil.getNetworkState(MainActivity.this) != NetUtil.NETWORK_NONE) {
+                    updateTodayWeather(currentCityCode);
+                } else {
+                    Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
     }
 
@@ -106,26 +128,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    private OnClickListener listener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.title_city_manager:
-                    Intent intent = new Intent(MainActivity.this, CityManager.class);
-                    intent.putExtra("", "");
-                    startActivityForResult(intent, 1);
-                    break;
-                case R.id.title_update:
-                    if (NetUtil.getNetworkState(MainActivity.this) != NetUtil.NETWORK_NONE) {
-                        updateTodayWeather(currentCityCode);
-                    } else {
-                        Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
-                    }
-                    break;
-            }
-        }
-    };
-
     private void initView() {
         titleCityTv = (TextView) findViewById(R.id.title_city_name);
         cityTv = (TextView) findViewById(R.id.city);
@@ -140,16 +142,24 @@ public class MainActivity extends Activity {
         weatherTv = (TextView) findViewById(R.id.weather);
         windTv = (TextView) findViewById(R.id.wind);
 
-        titleCityTv.setText("N/A");
-        cityTv.setText("N/A");
-        updateTimeTv.setText("N/A");
-        humidityTv.setText("N/A");
-        pm25Tv.setText("N/A");
-        qualityTv.setText("N/A");
-        dateTv.setText("N/A");
-        temperatureTv.setText("N/A");
-        weatherTv.setText("N/A");
-        windTv.setText("N/A");
+        if (NetUtil.getNetworkState(MainActivity.this) == NetUtil.NETWORK_NONE) {
+            titleCityTv.setText("N/A");
+            cityTv.setText("N/A");
+            updateTimeTv.setText("N/A");
+            humidityTv.setText("N/A");
+            pm25Tv.setText("N/A");
+            qualityTv.setText("N/A");
+            dateTv.setText("N/A");
+            temperatureTv.setText("N/A");
+            weatherTv.setText("N/A");
+            windTv.setText("N/A");
+            Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
+        } else {
+            SharedPreferences sharedPreferences = getSharedPreferences("city", MODE_PRIVATE);
+            currentCityCode = sharedPreferences.getString("code", "101010100");
+            currentCityName = sharedPreferences.getString("name", "北京");
+            updateTodayWeather(currentCityCode);
+        }
     }
 
     private void updateTodayWeather(String cityCode) {

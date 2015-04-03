@@ -3,19 +3,17 @@ package pku.ss.kevin.myweather;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.List;
 
 import pku.ss.kevin.app.MyApplication;
 import pku.ss.kevin.bean.City;
-import pku.ss.kevin.bean.TodayWeather;
 
 
 public class CityManager extends Activity implements View.OnClickListener {
@@ -26,6 +24,12 @@ public class CityManager extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.city_manager);
+
+        Intent intent = getIntent();
+        if (intent != null && intent.getStringExtra("name") != null) {
+            TextView titleNameTv = (TextView) findViewById(R.id.title_name);
+            titleNameTv.setText("当前城市："+intent.getStringExtra("name"));
+        }
 
         ImageView backImg = (ImageView) findViewById(R.id.title_back);
         backImg.setOnClickListener(this);
@@ -48,7 +52,8 @@ public class CityManager extends Activity implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
                 City city = findCityByName(list, cities[position]);
-                intent.putExtra("city", city.getNumber());
+                intent.putExtra("code", city.getNumber());
+                intent.putExtra("name", cities[position]);
                 setResult(RESULT_OK, intent);
                 finish();
             }
