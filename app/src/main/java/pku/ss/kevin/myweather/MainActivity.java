@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.lang.ref.WeakReference;
 import java.util.zip.GZIPInputStream;
 
 import pku.ss.kevin.bean.TodayWeather;
@@ -33,10 +34,8 @@ import pku.ss.kevin.util.NetUtil;
 public class MainActivity extends Activity {
 
     private static final String TAG = "MyWeather";
-
     private static final int UPDATE_TODAY_WEATHER = 1;
-
-    private static Handler handler;
+    private static MyHandler handler;
 
     private String currentCityName;
     private String currentCityCode;
@@ -69,6 +68,12 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(null);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
@@ -78,13 +83,36 @@ public class MainActivity extends Activity {
         }
     }
 
+    private static class MyHandler extends Handler {
+        // WeakReference to the outer class's instance.
+        private WeakReference<MainActivity> mOuter;
+
+        public MyHandler(MainActivity activity) {
+            mOuter = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            MainActivity outer = mOuter.get();
+            if (outer != null) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case UPDATE_TODAY_WEATHER:
+                        outer.updateTodayWeatherView((TodayWeather) msg.obj);
+                        Toast.makeText(outer, "更新成功", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }
+    }
+
     private OnClickListener listener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.title_city_manager:
                     Intent intent = new Intent(MainActivity.this, CityManager.class);
-                    intent.putExtra("","");
+                    intent.putExtra("", "");
                     startActivityForResult(intent, 1);
                     break;
                 case R.id.title_update:
@@ -127,22 +155,7 @@ public class MainActivity extends Activity {
     private void updateTodayWeather(String cityCode) {
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
         Log.d(TAG, address);
-
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case UPDATE_TODAY_WEATHER:
-                        updateTodayWeatherView((TodayWeather) msg.obj);
-                        Toast.makeText(MainActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
+        handler = new MyHandler(MainActivity.this);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -183,7 +196,7 @@ public class MainActivity extends Activity {
         }).start();
     }
 
-    private void updateTodayWeatherView(TodayWeather todayWeather) {
+    protected void updateTodayWeatherView(TodayWeather todayWeather) {
         titleCityTv.setText(todayWeather.getCity() + "天气");
         cityTv.setText(todayWeather.getCity());
         updateTimeTv.setText("今天" + todayWeather.getUpdateTime() + "发布");
