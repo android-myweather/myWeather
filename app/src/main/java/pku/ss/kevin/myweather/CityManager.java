@@ -48,7 +48,8 @@ public class CityManager extends Activity implements View.OnClickListener {
         String[] cities = toStrings(list);
 
         cityLv = (ListView) findViewById(R.id.city_list);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(CityManager.this, android.R.layout.simple_list_item_1, cities);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(CityManager.this, R.layout.item, cities);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(CityManager.this, android.R.layout.simple_list_item_1, cities);
         cityLv.setAdapter(adapter);
 
         cityLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -79,7 +80,8 @@ public class CityManager extends Activity implements View.OnClickListener {
         @Override
         public void afterTextChanged(Editable s) {
             final String[] cities = toStrings(MyApplication.getInstance().getCityDB().getCityByPY(s.toString()));
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(CityManager.this, android.R.layout.simple_list_item_1, cities);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(CityManager.this, R.layout.item, cities);
+            //ArrayAdapter<String> adapter = new ArrayAdapter<>(CityManager.this, android.R.layout.simple_list_item_1, cities);
             cityLv.setAdapter(adapter);
         }
     };

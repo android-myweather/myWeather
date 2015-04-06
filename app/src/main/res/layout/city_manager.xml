@@ -1,7 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#eeeeee"
     tools:context="pku.ss.kevin.myweather.CityManager">
 
     <RelativeLayout
@@ -17,13 +19,14 @@
             android:gravity="center"
             android:text="当前城市：北京"
             android:textSize="20sp" />
+
         <ImageView
             android:id="@+id/title_back"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/base_action_bar_back_normal"/>
+            android:src="@drawable/base_action_bar_back_normal" />
 
         <ImageView
             android:layout_width="1dp"
@@ -32,32 +35,35 @@
             android:layout_gravity="center"
             android:layout_toRightOf="@id/title_back"
             android:background="#A71717"
-            android:gravity="center"/>
+            android:gravity="center" />
     </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/search_glass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/magnifying_glass"
-        android:layout_below="@id/current_city"/>
 
     <EditText
         android:id="@+id/search_city"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="搜索全国城市（拼音）"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/magnifying_glass"
+        android:drawablePadding="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="30dp"
+        android:paddingTop="8dp"
         android:singleLine="true"
         android:background="@drawable/contact_search_box_edittext_keyword_background"
+        android:textColor="#000000"
+        android:textColorHint="#cccccc"
+        android:textSize="15sp"
         android:layout_below="@id/current_city"
-        android:layout_toRightOf="@id/search_glass"/>
-
+        android:textCursorDrawable="@null"/>
 
     <ListView
         android:id="@+id/city_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/search_glass">
+        android:paddingLeft="5dp"
+        android:layout_below="@id/search_city">
 
     </ListView>
 

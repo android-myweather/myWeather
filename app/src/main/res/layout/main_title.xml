@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/title"
     android:layout_width="fill_parent"
@@ -32,21 +31,22 @@
         android:textColor="#ffffff"
         android:textSize="22.0sp" />
 
-    <!--<ImageView-->
-        <!--android:id="@+id/title_update"-->
-        <!--android:layout_width="45dp"-->
-        <!--android:layout_height="45dp"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:gravity="center"-->
-        <!--android:src="@drawable/title_update" />-->
+    <ImageView
+        android:id="@+id/title_update"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:src="@drawable/title_update" />
 
     <ProgressBar
-        android:id="@+id/title_update"
+        android:id="@+id/title_update_progress"
         android:layout_alignParentRight="true"
         android:gravity="center"
         style="@style/title_update_progressbar_style"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/title_share"

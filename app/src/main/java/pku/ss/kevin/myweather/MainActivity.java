@@ -40,6 +40,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private String currentCityName;
     private String currentCityCode;
 
+    private ProgressBar updateProgress;
+    private ImageView updateImg;
+
     private TextView titleCityTv;
     private TextView cityTv;
     private TextView updateTimeTv;
@@ -57,14 +60,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
-        initView();
 
         ImageView cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
         cityManagerImg.setOnClickListener(this);
 
-//        ImageView updateImg = (ImageView) findViewById(R.id.title_update);
-        ProgressBar updateImg = (ProgressBar) findViewById(R.id.title_update);
+        updateImg = (ImageView) findViewById(R.id.title_update);
         updateImg.setOnClickListener(this);
+        updateProgress = (ProgressBar) findViewById(R.id.title_update_progress);
+
+        initView();
     }
 
     @Override
@@ -92,7 +96,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (System.currentTimeMillis() - lastClick <= 1000) {
+        if (System.currentTimeMillis() - lastClick <= 2000) {
             Toast.makeText(MainActivity.this, "更新中...", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -130,6 +134,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 switch (msg.what) {
                     case UPDATE_TODAY_WEATHER:
                         outer.updateTodayWeatherView((TodayWeather) msg.obj);
+                        outer.updateImg.setVisibility(View.VISIBLE);
+                        outer.updateProgress.setVisibility(View.INVISIBLE);
                         Toast.makeText(outer, "更新成功", Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -172,6 +178,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void updateTodayWeather(String cityCode) {
+        updateImg.setVisibility(View.INVISIBLE);
+        updateProgress.setVisibility(View.VISIBLE);
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
         Log.d(TAG, address);
         handler = new MyHandler(MainActivity.this);
