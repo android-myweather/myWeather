@@ -32,13 +32,21 @@
         android:textColor="#ffffff"
         android:textSize="22.0sp" />
 
-    <ImageView
+    <!--<ImageView-->
+        <!--android:id="@+id/title_update"-->
+        <!--android:layout_width="45dp"-->
+        <!--android:layout_height="45dp"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:gravity="center"-->
+        <!--android:src="@drawable/title_update" />-->
+
+    <ProgressBar
         android:id="@+id/title_update"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
         android:layout_alignParentRight="true"
         android:gravity="center"
-        android:src="@drawable/title_update" />
+        style="@style/title_update_progressbar_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/title_share"

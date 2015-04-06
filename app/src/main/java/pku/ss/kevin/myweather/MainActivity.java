@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +62,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         ImageView cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
         cityManagerImg.setOnClickListener(this);
 
-        ImageView updateImg = (ImageView) findViewById(R.id.title_update);
+//        ImageView updateImg = (ImageView) findViewById(R.id.title_update);
+        ProgressBar updateImg = (ProgressBar) findViewById(R.id.title_update);
         updateImg.setOnClickListener(this);
     }
 
@@ -86,8 +88,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    long lastClick;
+
     @Override
     public void onClick(View v) {
+        if (System.currentTimeMillis() - lastClick <= 1000) {
+            Toast.makeText(MainActivity.this, "更新中...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        lastClick = System.currentTimeMillis();
+
         switch (v.getId()) {
             case R.id.title_city_manager:
                 Intent intent = new Intent(MainActivity.this, CityManager.class);

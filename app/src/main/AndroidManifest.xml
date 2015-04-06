@@ -25,6 +25,13 @@
             android:label="CityManager">
 
         </activity>
+
+        <activity
+            android:name=".TestActivity"
+            android:label="MyWeather"
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

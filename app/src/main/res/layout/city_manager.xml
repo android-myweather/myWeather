@@ -35,20 +35,29 @@
             android:gravity="center"/>
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/search_glass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/magnifying_glass"
+        android:layout_below="@id/current_city"/>
+
     <EditText
         android:id="@+id/search_city"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="搜索全国城市（拼音）"
         android:singleLine="true"
-        android:layout_below="@id/current_city"/>
+        android:background="@drawable/contact_search_box_edittext_keyword_background"
+        android:layout_below="@id/current_city"
+        android:layout_toRightOf="@id/search_glass"/>
 
 
     <ListView
         android:id="@+id/city_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/search_city">
+        android:layout_below="@id/search_glass">
 
     </ListView>
 
