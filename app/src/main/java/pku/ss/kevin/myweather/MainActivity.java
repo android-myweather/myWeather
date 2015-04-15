@@ -7,11 +7,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,7 +36,7 @@ import java.util.zip.GZIPInputStream;
 import pku.ss.kevin.bean.TodayWeather;
 import pku.ss.kevin.util.NetUtil;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener, GestureDetector.OnGestureListener {
 
     private static final String TAG = "MyWeather";
     private static final int UPDATE_TODAY_WEATHER = 1;
@@ -42,6 +47,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private ProgressBar updateProgress;
     private ImageView updateImg;
+
+    private ViewFlipper forecastFv;
+    private GestureDetector detector;
+    Animation leftInAnimation;
+    Animation leftOutAnimation;
+    Animation rightInAnimation;
+    Animation rightOutAnimation;
 
     private TextView titleCityTv;
     private TextView cityTv;
@@ -67,6 +79,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
         updateImg = (ImageView) findViewById(R.id.title_update);
         updateImg.setOnClickListener(this);
         updateProgress = (ProgressBar) findViewById(R.id.title_update_progress);
+
+        forecastFv = (ViewFlipper) findViewById(R.id.weather_forecast);
+        detector = new GestureDetector(this, this);
+
+//        forecastFv.addView(getImageView(R.drawable.new_feature_1));
+//        forecastFv.addView(getImageView(R.drawable.new_feature_2));
+//        forecastFv.addView(getImageView(R.drawable.new_feature_3));
+//        forecastFv.addView(getImageView(R.drawable.new_feature_4));
+
+        //动画效果
+        leftInAnimation = AnimationUtils.loadAnimation(this, R.anim.left_in);
+        leftOutAnimation = AnimationUtils.loadAnimation(this, R.anim.left_out);
+        rightInAnimation = AnimationUtils.loadAnimation(this, R.anim.right_in);
+        rightOutAnimation = AnimationUtils.loadAnimation(this, R.anim.right_out);
 
         initView();
     }
@@ -96,8 +122,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (System.currentTimeMillis() - lastClick <= 2000) {
-            Toast.makeText(MainActivity.this, "更新中...", Toast.LENGTH_SHORT).show();
+        if (System.currentTimeMillis() - lastClick <= 1000) {
+            //Toast.makeText(MainActivity.this, "更新中...", Toast.LENGTH_SHORT).show();
             return;
         }
         lastClick = System.currentTimeMillis();
@@ -116,6 +142,73 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
                 break;
         }
+    }
+
+    float startX;
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startX = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+
+                if (event.getX() < startX) { // 向左滑动
+                    forecastFv.setInAnimation(this, R.anim.left_in);
+                    forecastFv.setOutAnimation(this, R.anim.left_out);
+                    forecastFv.showNext();
+                } else if (event.getX() > startX) { // 向右滑动
+                    forecastFv.setInAnimation(this, R.anim.right_in);
+                    forecastFv.setOutAnimation(this, R.anim.right_out);
+                    forecastFv.showPrevious();
+                }
+                break;
+        }
+
+        return super.onTouchEvent(event);
+//        return this.detector.onTouchEvent(event); //touch事件交给手势处理。
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        Log.i(TAG, "e1=" + e1.getX() + " e2=" + e2.getX() + " e1-e2=" + (e1.getX() - e2.getX()));
+        if (e1.getX() - e2.getX() > 120) {
+            forecastFv.setInAnimation(leftInAnimation);
+            forecastFv.setOutAnimation(leftOutAnimation);
+            forecastFv.showNext();//向右滑动
+            return true;
+        } else if (e1.getX() - e2.getY() < -120) {
+            forecastFv.setInAnimation(rightInAnimation);
+            forecastFv.setOutAnimation(rightOutAnimation);
+            forecastFv.showPrevious();//向左滑动
+            return true;
+        }
+        return false;
     }
 
     private static class MyHandler extends Handler {
@@ -231,7 +324,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         pm25Tv.setText(todayWeather.getPm25());
         airImg.setImageResource(getAirImg(todayWeather.getQuality()));
         qualityTv.setText(todayWeather.getQuality());
-        dateTv.setText(todayWeather.getDate().substring(2));
+        dateTv.setText(todayWeather.getDate());
         temperatureTv.setText(todayWeather.getLow() + "~" + todayWeather.getHigh());
         weatherTv.setText(todayWeather.getDayType() + "转" + todayWeather.getNightType());
         weatherImg.setImageResource(getWeatherImg(todayWeather.getDayType()));
