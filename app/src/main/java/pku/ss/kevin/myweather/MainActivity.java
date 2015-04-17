@@ -3,8 +3,7 @@ package pku.ss.kevin.myweather;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.os.Message;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -30,7 +29,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.lang.ref.WeakReference;
 import java.util.zip.GZIPInputStream;
 
 import pku.ss.kevin.bean.TodayWeather;
@@ -39,17 +37,16 @@ import pku.ss.kevin.util.NetUtil;
 public class MainActivity extends Activity implements View.OnClickListener, GestureDetector.OnGestureListener {
 
     private static final String TAG = "MyWeather";
-    private static final int UPDATE_TODAY_WEATHER = 1;
-    private static MyHandler handler;
 
     private String currentCityName;
     private String currentCityCode;
+
+    private float startX;
 
     private ProgressBar updateProgress;
     private ImageView updateImg;
 
     private ViewFlipper forecastFv;
-    private GestureDetector detector;
     Animation leftInAnimation;
     Animation leftOutAnimation;
     Animation rightInAnimation;
@@ -81,13 +78,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
         updateProgress = (ProgressBar) findViewById(R.id.title_update_progress);
 
         forecastFv = (ViewFlipper) findViewById(R.id.weather_forecast);
-        detector = new GestureDetector(this, this);
-
-//        forecastFv.addView(getImageView(R.drawable.new_feature_1));
-//        forecastFv.addView(getImageView(R.drawable.new_feature_2));
-//        forecastFv.addView(getImageView(R.drawable.new_feature_3));
-//        forecastFv.addView(getImageView(R.drawable.new_feature_4));
-
         //动画效果
         leftInAnimation = AnimationUtils.loadAnimation(this, R.anim.left_in);
         leftOutAnimation = AnimationUtils.loadAnimation(this, R.anim.left_out);
@@ -100,7 +90,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(null);
         SharedPreferences sharedPreferences = getSharedPreferences("city", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("code", currentCityCode);
@@ -114,16 +103,16 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
         if (requestCode == 1 && resultCode == RESULT_OK) {
             currentCityCode = data.getStringExtra("code");
             currentCityName = data.getStringExtra("name");
-            updateTodayWeather(currentCityCode);
+//            updateTodayWeather(currentCityCode);
+            new UpdateWeatherBackground().execute(currentCityCode);
         }
     }
 
     long lastClick;
-
     @Override
     public void onClick(View v) {
         if (System.currentTimeMillis() - lastClick <= 1000) {
-            //Toast.makeText(MainActivity.this, "更新中...", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(MainActivity.this, "更新中...", Toast.LENGTH_SHORT).show();
             return;
         }
         lastClick = System.currentTimeMillis();
@@ -136,7 +125,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
                 break;
             case R.id.title_update:
                 if (NetUtil.getNetworkState(MainActivity.this) != NetUtil.NETWORK_NONE) {
-                    updateTodayWeather(currentCityCode);
+                    // updateTodayWeather(currentCityCode);
+                    new UpdateWeatherBackground().execute(currentCityCode);
                 } else {
                     Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
                 }
@@ -144,7 +134,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
         }
     }
 
-    float startX;
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
@@ -152,7 +142,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
                 startX = event.getX();
                 break;
             case MotionEvent.ACTION_UP:
-
                 if (event.getX() < startX) { // 向左滑动
                     forecastFv.setInAnimation(this, R.anim.left_in);
                     forecastFv.setOutAnimation(this, R.anim.left_out);
@@ -164,9 +153,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
                 }
                 break;
         }
-
         return super.onTouchEvent(event);
-//        return this.detector.onTouchEvent(event); //touch事件交给手势处理。
     }
 
     @Override
@@ -196,44 +183,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        Log.i(TAG, "e1=" + e1.getX() + " e2=" + e2.getX() + " e1-e2=" + (e1.getX() - e2.getX()));
-        if (e1.getX() - e2.getX() > 120) {
-            forecastFv.setInAnimation(leftInAnimation);
-            forecastFv.setOutAnimation(leftOutAnimation);
-            forecastFv.showNext();//向右滑动
-            return true;
-        } else if (e1.getX() - e2.getY() < -120) {
-            forecastFv.setInAnimation(rightInAnimation);
-            forecastFv.setOutAnimation(rightOutAnimation);
-            forecastFv.showPrevious();//向左滑动
-            return true;
-        }
         return false;
-    }
-
-    private static class MyHandler extends Handler {
-        // WeakReference to the outer class's instance.
-        private WeakReference<MainActivity> mOuter;
-
-        public MyHandler(MainActivity activity) {
-            mOuter = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            MainActivity outer = mOuter.get();
-            if (outer != null) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case UPDATE_TODAY_WEATHER:
-                        outer.updateTodayWeatherView((TodayWeather) msg.obj);
-                        outer.updateImg.setVisibility(View.VISIBLE);
-                        outer.updateProgress.setVisibility(View.INVISIBLE);
-                        Toast.makeText(outer, "更新成功", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        }
     }
 
     private void initView() {
@@ -266,54 +216,61 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
             SharedPreferences sharedPreferences = getSharedPreferences("city", MODE_PRIVATE);
             currentCityCode = sharedPreferences.getString("code", "101010100");
             currentCityName = sharedPreferences.getString("name", "北京");
-            updateTodayWeather(currentCityCode);
+            new UpdateWeatherBackground().execute(currentCityCode);
         }
     }
 
-    private void updateTodayWeather(String cityCode) {
-        updateImg.setVisibility(View.INVISIBLE);
-        updateProgress.setVisibility(View.VISIBLE);
-        final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + cityCode;
-        Log.d(TAG, address);
-        handler = new MyHandler(MainActivity.this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    HttpClient httpClient = new DefaultHttpClient();
-                    HttpGet httpGet = new HttpGet(address);
-                    HttpResponse httpResponse = httpClient.execute(httpGet);
-                    if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                        HttpEntity entity = httpResponse.getEntity();
-                        InputStream responseStream = entity.getContent();
+    private class UpdateWeatherBackground extends AsyncTask<String, Integer, TodayWeather> {
 
-                        responseStream = new GZIPInputStream(responseStream);
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(responseStream));
+        @Override
+        protected void onPreExecute() {
+            Log.d(TAG, "开始更新");
+            updateImg.setVisibility(View.INVISIBLE);
+            updateProgress.setVisibility(View.VISIBLE);
+        }
 
-                        StringBuilder response = new StringBuilder();
-                        String str;
-                        while ((str = reader.readLine()) != null) {
-                            response.append(str);
-                        }
-                        String responseStr = response.toString();
-
-                        //解析XML获取天气状态
-                        TodayWeather todayWeather = queryTodayWeather(responseStr);
-                        //Log.d(TAG, todayWeather.toString());
-
-                        //向主线程发送消息
-                        if (todayWeather != null) {
-                            Message msg = new Message();
-                            msg.obj = todayWeather;
-                            msg.what = UPDATE_TODAY_WEATHER;
-                            handler.sendMessage(msg);
-                        }
+        @Override
+        protected TodayWeather doInBackground(String... urls) {
+            String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + urls[0];
+            Log.d(TAG, address);
+            TodayWeather todayWeather = null;
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpGet httpGet = new HttpGet(address);
+                HttpResponse httpResponse = httpClient.execute(httpGet);
+                if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                    HttpEntity entity = httpResponse.getEntity();
+                    InputStream responseStream = entity.getContent();
+                    responseStream = new GZIPInputStream(responseStream);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(responseStream));
+                    StringBuilder response = new StringBuilder();
+                    String str;
+                    while ((str = reader.readLine()) != null) {
+                        response.append(str);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    String responseStr = response.toString();
+                    //解析XML获取天气状态
+                    todayWeather = queryTodayWeather(responseStr);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }).start();
+//            publishProgress();
+            return todayWeather;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+//            updateImg.setVisibility(View.VISIBLE);
+//            updateProgress.setVisibility(View.INVISIBLE);
+        }
+
+        protected void onPostExecute(TodayWeather result) {
+            updateTodayWeatherView(result);
+            Log.d(TAG, "更新完成");
+            updateImg.setVisibility(View.VISIBLE);
+            updateProgress.setVisibility(View.INVISIBLE);
+            Toast.makeText(getBaseContext(), "更新成功", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateTodayWeatherView(TodayWeather todayWeather) {
@@ -331,6 +288,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Gest
         windTv.setText(todayWeather.getWindDirection() + " " + todayWeather.getWindStrength());
     }
 
+    // 这个得改
     private TodayWeather queryTodayWeather(String xmlData) {
         TodayWeather todayWeather = null;
         try {
