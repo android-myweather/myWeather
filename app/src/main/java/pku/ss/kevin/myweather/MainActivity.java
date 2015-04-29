@@ -51,6 +51,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
     private ProgressBar updateProgress;
     private ImageView updateImg;
+    private ImageView shareImg;
 
     private TextView titleCityTv;
     private TextView cityTv;
@@ -80,6 +81,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         updateImg = (ImageView) findViewById(R.id.title_update);
         updateImg.setOnClickListener(this);
         updateProgress = (ProgressBar) findViewById(R.id.title_update_progress);
+
+        shareImg = (ImageView) findViewById(R.id.title_share);
+        shareImg.setOnClickListener(this);
 
         initForecastViews();
         initDots();
@@ -133,6 +137,15 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 } else {
                     Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
                 }
+                break;
+            case R.id.title_share:
+                intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "天气预报");
+                intent.putExtra(Intent.EXTRA_TEXT, "今天（" + dateTv.getText() + "）" + cityTv.getText() + "天气："
+                        + weatherTv.getText() + " " + temperatureTv.getText());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(Intent.createChooser(intent, getTitle()));
                 break;
         }
     }
