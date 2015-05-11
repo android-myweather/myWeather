@@ -6,12 +6,13 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 
 import pku.ss.kevin.bean.TodayWeather;
+import pku.ss.kevin.bean.WeatherInfo;
 
 public class ParseUtil {
 
     // 这个得改
-    public static TodayWeather queryTodayWeather(String xmlData) {
-        TodayWeather todayWeather = null;
+    public static WeatherInfo queryTodayWeather(String xmlData) {
+        WeatherInfo todayWeather = null;
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser xmlPullParser = factory.newPullParser();
@@ -31,7 +32,7 @@ public class ParseUtil {
                         String tag = xmlPullParser.getName();
                         switch (tag) {
                             case "resp":
-                                todayWeather = new TodayWeather();
+                                todayWeather = new WeatherInfo();
                                 break;
                             case "city":
                                 todayWeather.setCity(xmlPullParser.nextText());
@@ -95,5 +96,4 @@ public class ParseUtil {
         }
         return todayWeather;
     }
-
 }

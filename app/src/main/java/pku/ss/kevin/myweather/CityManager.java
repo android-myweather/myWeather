@@ -21,8 +21,6 @@ import pku.ss.kevin.bean.City;
 
 public class CityManager extends Activity implements View.OnClickListener {
 
-    private static final String TAG = "MyWeather";
-
     private ListView cityLv;
 
     @Override

@@ -5,26 +5,30 @@
     android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@+id/day2"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
         android:gravity="center">
 
         <TextView
+            android:id="@+id/date2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="星期天"
+            android:text="星期四"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
         <ImageView
+            android:id="@+id/weather_image2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/biz_plugin_weather_daxue" />
 
         <TextView
+            android:id="@+id/temperature2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-5℃~10℃"
@@ -32,6 +36,7 @@
             android:textSize="25sp" />
 
         <TextView
+            android:id="@+id/weather2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="多云转晴"
@@ -39,6 +44,7 @@
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/wind2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="微风 3-4级"
@@ -47,26 +53,30 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/day3"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
         android:gravity="center">
 
         <TextView
+            android:id="@+id/date3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="星期一"
+            android:text="星期五"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
         <ImageView
+            android:id="@+id/weather_image3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/biz_plugin_weather_leizhenyu" />
 
         <TextView
+            android:id="@+id/temperature3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-5℃~10℃"
@@ -74,6 +84,7 @@
             android:textSize="25sp" />
 
         <TextView
+            android:id="@+id/weather3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="多云转晴"
@@ -81,6 +92,7 @@
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/wind3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="微风 3-4级"
@@ -89,26 +101,30 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/day4"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
         android:gravity="center">
 
         <TextView
+            android:id="@+id/date4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="星期二"
+            android:text="星期六"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
         <ImageView
+            android:id="@+id/weather_image4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/biz_plugin_weather_leizhenyu" />
 
         <TextView
+            android:id="@+id/temperature4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-5℃~10℃"
@@ -116,6 +132,7 @@
             android:textSize="25sp" />
 
         <TextView
+            android:id="@+id/weather4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="多云转晴"
@@ -123,6 +140,7 @@
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/wind4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="微风 3-4级"

@@ -7,42 +7,35 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import pku.ss.kevin.bean.TodayWeather;
+import pku.ss.kevin.bean.Weather;
+import pku.ss.kevin.bean.WeatherInfo;
+import pku.ss.kevin.util.LogUtil;
 import pku.ss.kevin.util.NetUtil;
 import pku.ss.kevin.util.ParseUtil;
 import pku.ss.kevin.util.UIUtil;
 
 public class MainActivity extends Activity implements View.OnClickListener, ViewPager.OnPageChangeListener {
-
-    private static final String TAG = "MyWeather";
 
     private String currentCityName;
     private String currentCityCode;
@@ -51,7 +44,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
     private ProgressBar updateProgress;
     private ImageView updateImg;
-    private ImageView shareImg;
 
     private TextView titleCityTv;
     private TextView cityTv;
@@ -70,6 +62,37 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     private List<View> forecastViews;
     private List<ImageView> dots;
 
+    private TextView date_1;
+    private ImageView weather_image_1;
+    private TextView temperature_1;
+    private TextView weather_1;
+    private TextView wind_1;
+    private TextView date0;
+    private ImageView weather_image0;
+    private TextView temperature0;
+    private TextView weather0;
+    private TextView wind0;
+    private TextView date1;
+    private ImageView weather_image1;
+    private TextView temperature1;
+    private TextView weather1;
+    private TextView wind1;
+    private TextView date2;
+    private ImageView weather_image2;
+    private TextView temperature2;
+    private TextView weather2;
+    private TextView wind2;
+    private TextView date3;
+    private ImageView weather_image3;
+    private TextView temperature3;
+    private TextView weather3;
+    private TextView wind3;
+    private TextView date4;
+    private ImageView weather_image4;
+    private TextView temperature4;
+    private TextView weather4;
+    private TextView wind4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,12 +100,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
         ImageView cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
         cityManagerImg.setOnClickListener(this);
-
         updateImg = (ImageView) findViewById(R.id.title_update);
         updateImg.setOnClickListener(this);
         updateProgress = (ProgressBar) findViewById(R.id.title_update_progress);
-
-        shareImg = (ImageView) findViewById(R.id.title_share);
+        ImageView shareImg = (ImageView) findViewById(R.id.title_share);
         shareImg.setOnClickListener(this);
 
         initForecastViews();
@@ -168,20 +189,20 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
     }
 
-    private class UpdateWeatherBackground extends AsyncTask<String, Integer, TodayWeather> {
+    private class UpdateWeatherBackground extends AsyncTask<String, Integer, WeatherInfo> {
 
         @Override
         protected void onPreExecute() {
-            Log.d(TAG, "开始更新");
+            Log.d(LogUtil.TAG, "开始更新");
             updateImg.setVisibility(View.INVISIBLE);
             updateProgress.setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected TodayWeather doInBackground(String... urls) {
+        protected WeatherInfo doInBackground(String... urls) {
             String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + urls[0];
-            Log.d(TAG, address);
-            TodayWeather todayWeather = null;
+            Log.d(LogUtil.TAG, address);
+            WeatherInfo weather = null;
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpGet httpGet = new HttpGet(address);
@@ -197,13 +218,13 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                         response.append(str);
                     }
                     String responseStr = response.toString();
-                    todayWeather = ParseUtil.queryTodayWeather(responseStr);
+                    weather = ParseUtil.queryTodayWeather(responseStr);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 //            publishProgress();
-            return todayWeather;
+            return weather;
         }
 
         protected void onProgressUpdate(Integer... progress) {
@@ -211,9 +232,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 //            updateProgress.setVisibility(View.INVISIBLE);
         }
 
-        protected void onPostExecute(TodayWeather result) {
-            updateTodayWeatherView(result);
-            Log.d(TAG, "更新完成");
+        protected void onPostExecute(WeatherInfo result) {
+            updateWeatherView(result);
+            Log.d(LogUtil.TAG, "更新完成");
             updateImg.setVisibility(View.VISIBLE);
             updateProgress.setVisibility(View.INVISIBLE);
             Toast.makeText(getBaseContext(), "更新成功", Toast.LENGTH_SHORT).show();
@@ -233,6 +254,38 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         temperatureTv = (TextView) findViewById(R.id.temperature);
         weatherTv = (TextView) findViewById(R.id.weather);
         windTv = (TextView) findViewById(R.id.wind);
+
+        // 这段代码太可怕了
+        date_1 = (TextView) forecastViews.get(0).findViewById(R.id.date_1);
+        weather_image_1 = (ImageView) forecastViews.get(0).findViewById(R.id.weather_image_1);
+        temperature_1 = (TextView) forecastViews.get(0).findViewById(R.id.temperature_1);
+        weather_1 = (TextView) forecastViews.get(0).findViewById(R.id.weather_1);
+        wind_1 = (TextView) forecastViews.get(0).findViewById(R.id.wind_1);
+        date0 = (TextView) forecastViews.get(0).findViewById(R.id.date0);
+        weather_image0 = (ImageView) forecastViews.get(0).findViewById(R.id.weather_image0);
+        temperature0 = (TextView) forecastViews.get(0).findViewById(R.id.temperature0);
+        weather0 = (TextView) forecastViews.get(0).findViewById(R.id.weather0);
+        wind0 = (TextView) forecastViews.get(0).findViewById(R.id.wind0);
+        date1 = (TextView) forecastViews.get(0).findViewById(R.id.date1);
+        weather_image1 = (ImageView) forecastViews.get(0).findViewById(R.id.weather_image1);
+        temperature1 = (TextView) forecastViews.get(0).findViewById(R.id.temperature1);
+        weather1 = (TextView) forecastViews.get(0).findViewById(R.id.weather1);
+        wind1 = (TextView) forecastViews.get(0).findViewById(R.id.wind1);
+        date2 = (TextView) forecastViews.get(1).findViewById(R.id.date2);
+        weather_image2 = (ImageView) forecastViews.get(1).findViewById(R.id.weather_image2);
+        temperature2 = (TextView) forecastViews.get(1).findViewById(R.id.temperature2);
+        weather2 = (TextView) forecastViews.get(1).findViewById(R.id.weather2);
+        wind2 = (TextView) forecastViews.get(1).findViewById(R.id.wind2);
+        date3 = (TextView) forecastViews.get(1).findViewById(R.id.date3);
+        weather_image3 = (ImageView) forecastViews.get(1).findViewById(R.id.weather_image3);
+        temperature3 = (TextView) forecastViews.get(1).findViewById(R.id.temperature3);
+        weather3 = (TextView) forecastViews.get(1).findViewById(R.id.weather3);
+        wind3 = (TextView) forecastViews.get(1).findViewById(R.id.wind3);
+        date4 = (TextView) forecastViews.get(1).findViewById(R.id.date4);
+        weather_image4 = (ImageView) forecastViews.get(1).findViewById(R.id.weather_image4);
+        temperature4 = (TextView) forecastViews.get(1).findViewById(R.id.temperature4);
+        weather4 = (TextView) forecastViews.get(1).findViewById(R.id.weather4);
+        wind4 = (TextView) forecastViews.get(1).findViewById(R.id.wind4);
 
         if (NetUtil.getNetworkState(MainActivity.this) == NetUtil.NETWORK_NONE) {
             titleCityTv.setText("N/A");
@@ -258,13 +311,18 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         forecastViews = new ArrayList<>();
         LayoutInflater inflater = LayoutInflater.from(this);
         forecastViews.add(inflater.inflate(R.layout.forecast1, forecastVp));
-        forecastViews.add(inflater.inflate(R.layout.forecast1, forecastVp));
+        forecastViews.add(inflater.inflate(R.layout.forecast2, forecastVp));
     }
 
     private void initDots() {
         dots = new ArrayList<>();
         dots.add((ImageView) findViewById(R.id.indicator1));
         dots.add((ImageView) findViewById(R.id.indicator2));
+    }
+
+    private void updateWeatherView(WeatherInfo weather) {
+        updateTodayWeatherView(weather);
+        updateWeatherForecastView(weather);
     }
 
     private void updateTodayWeatherView(TodayWeather todayWeather) {
@@ -277,9 +335,73 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         qualityTv.setText(todayWeather.getQuality());
         dateTv.setText(todayWeather.getDate());
         temperatureTv.setText(todayWeather.getLow() + "~" + todayWeather.getHigh());
-        weatherTv.setText(todayWeather.getDayType() + "转" + todayWeather.getNightType());
+        if (todayWeather.getDayType().equals(todayWeather.getNightType()))
+            weatherTv.setText(todayWeather.getDayType());
+        else
+            weatherTv.setText(todayWeather.getDayType() + "转" + todayWeather.getNightType());
         weatherImg.setImageResource(UIUtil.getWeatherImg(todayWeather.getDayType()));
         windTv.setText(todayWeather.getWindDirection() + " " + todayWeather.getWindStrength());
+    }
+
+    private void updateWeatherForecastView(WeatherInfo weather) {
+        Weather yesterday = weather.getYesterday();
+        date_1.setText(yesterday.getDate());
+        weather_image_1.setImageResource(UIUtil.getWeatherImg(yesterday.getDayType()));
+        temperature_1.setText(yesterday.getLow() + "~" + yesterday.getHigh());
+        if (yesterday.getDayType().equals(yesterday.getNightType()))
+            weather_1.setText(yesterday.getDayType());
+        else
+            weather_1.setText(yesterday.getDayType() + "转" + yesterday.getNightType());
+        wind_1.setText(yesterday.getWindDirection() + " " + yesterday.getWindStrength());
+
+        date0.setText(weather.getDate());
+        weather_image0.setImageResource(UIUtil.getWeatherImg(weather.getDayType()));
+        temperature0.setText(weather.getLow() + "~" + weather.getHigh());
+        if (weather.getDayType().equals(weather.getNightType()))
+            weather0.setText(weather.getDayType());
+        else
+            weather0.setText(weather.getDayType() + "转" + weather.getNightType());
+        wind0.setText(weather.getWindDirection() + " " + weather.getWindStrength());
+
+        Weather day1 = weather.getDay1();
+        date1.setText(day1.getDate());
+        weather_image1.setImageResource(UIUtil.getWeatherImg(day1.getDayType()));
+        temperature1.setText(day1.getLow() + "~" + day1.getHigh());
+        if (day1.getDayType().equals(day1.getNightType()))
+            weather1.setText(day1.getDayType());
+        else
+            weather1.setText(day1.getDayType() + "转" + day1.getNightType());
+        wind1.setText(day1.getWindDirection() + " " + day1.getWindStrength());
+
+        Weather day2 = weather.getDay1();
+        date2.setText(day2.getDate());
+        weather_image2.setImageResource(UIUtil.getWeatherImg(day2.getDayType()));
+        temperature2.setText(day2.getLow() + "~" + day2.getHigh());
+        if (day2.getDayType().equals(day2.getNightType()))
+            weather2.setText(day2.getDayType());
+        else
+            weather2.setText(day2.getDayType() + "转" + day2.getNightType());
+        wind2.setText(day2.getWindDirection() + " " + day2.getWindStrength());
+
+        Weather day3 = weather.getDay1();
+        date3.setText(day3.getDate());
+        weather_image3.setImageResource(UIUtil.getWeatherImg(day3.getDayType()));
+        temperature3.setText(day3.getLow() + "~" + day3.getHigh());
+        if (day3.getDayType().equals(day3.getNightType()))
+            weather3.setText(day3.getDayType());
+        else
+            weather3.setText(day3.getDayType() + "转" + day3.getNightType());
+        wind3.setText(day3.getWindDirection() + " " + day3.getWindStrength());
+
+        Weather day4 = weather.getDay1();
+        date4.setText(day4.getDate());
+        weather_image4.setImageResource(UIUtil.getWeatherImg(day4.getDayType()));
+        temperature4.setText(day4.getLow() + "~" + day4.getHigh());
+        if (day4.getDayType().equals(day4.getNightType()))
+            weather4.setText(day4.getDayType());
+        else
+            weather4.setText(day4.getDayType() + "转" + day4.getNightType());
+        wind4.setText(day4.getWindDirection() + " " + day4.getWindStrength());
     }
 
 }

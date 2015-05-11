@@ -4,52 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp"
+    <Button
+        android:id="@+id/broadcast"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="#ffffff">
+        android:text="Broadcast" />
 
-    </android.support.v4.view.ViewPager>
-
-    <RelativeLayout
-        android:id="@+id/indicator"
+    <Button
+        android:id="@+id/register"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:background="#000000">
+        android:text="Register" />
 
-        <ImageView
-            android:id="@+id/p1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@drawable/page_indicator_focused"/>
-
-        <ImageView
-            android:id="@+id/p2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/p1"
-            android:padding="5dp"
-            android:src="@drawable/page_indicator_unfocused" />
-
-        <ImageView
-            android:id="@+id/p3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/p2"
-            android:padding="5dp"
-            android:src="@drawable/page_indicator_unfocused" />
-
-        <ImageView
-            android:id="@+id/p4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/p3"
-            android:padding="5dp"
-            android:src="@drawable/page_indicator_unfocused" />
-    </RelativeLayout>
+    <Button
+        android:id="@+id/unregister"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Unregister" />
 
 </LinearLayout>

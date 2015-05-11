@@ -1,37 +1,22 @@
 package pku.ss.kevin.bean;
 
-import java.io.Serializable;
+public class TodayWeather extends Weather{
 
-public class TodayWeather implements Serializable {
-
-    private String city;
-    private String updateTime;
-    private String temperature;
-    private String humidity;
-    private String pm25;
-    private String quality;
-    private String windDirection;
-    private String windStrength;
-    private String date;
-    private String high;
-    private String low;
-    private String dayType;
-    private String nightType;
+    protected String city;
+    protected String updateTime;
+    protected String temperature;
+    protected String humidity;
+    protected String pm25;
+    protected String quality;
 
     public TodayWeather() {
+        super();
         city = "N/A";
         updateTime = "N/A";
         temperature = "N/A";
         humidity = "N/A";
         pm25 = "N/A";
         quality = "N/A";
-        windDirection = "N/A";
-        windStrength = "N/A";
-        date = "N/A";
-        high = "N/A";
-        low = "N/A";
-        dayType = "N/A";
-        nightType = "N/A";
     }
 
     @Override
@@ -67,34 +52,6 @@ public class TodayWeather implements Serializable {
         return quality;
     }
 
-    public String getWindDirection() {
-        return windDirection;
-    }
-
-    public String getWindStrength() {
-        return windStrength;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getHigh() {
-        return high;
-    }
-
-    public String getLow() {
-        return low;
-    }
-
-    public String getDayType() {
-        return dayType;
-    }
-
-    public String getNightType() {
-        return nightType;
-    }
-
     public void setCity(String city) {
         this.city = city;
     }
@@ -119,31 +76,4 @@ public class TodayWeather implements Serializable {
         this.quality = quality;
     }
 
-    public void setWindDirection(String windDirection) {
-        this.windDirection = windDirection;
-    }
-
-    public void setWindStrength(String windStrength) {
-        this.windStrength = windStrength;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public void setHigh(String high) {
-        this.high = high;
-    }
-
-    public void setLow(String low) {
-        this.low = low;
-    }
-
-    public void setDayType(String dayType) {
-        this.dayType = dayType;
-    }
-
-    public void setNightType(String nightType) {
-        this.nightType = nightType;
-    }
 }
