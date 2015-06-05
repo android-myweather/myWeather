@@ -21,20 +21,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".CityManager"
             android:label="CityManager" >
         </activity>
-        <activity
-            android:name=".TestActivity"
-            android:label="MyWeather"
-            android:screenOrientation="portrait" >
 
-
-        </activity>
-
+        <service
+            android:name=".UpdateService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

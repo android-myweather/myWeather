@@ -10,10 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import pku.ss.kevin.db.CityDB;
+import pku.ss.kevin.util.LogUtil;
 
 public class MyApplication extends Application {
-
-    private static final String TAG = "MyWeather";
 
     private static MyApplication mApplication;
 
@@ -40,7 +39,7 @@ public class MyApplication extends Application {
                 + File.separator + CityDB.CITY_DB_NAME;
         File db = new File(path);
         if (!db.exists()) {
-            Log.d(TAG, "city.db does noe exist");
+            Log.d(LogUtil.TAG, "city.db does noe exist");
             try {
                 InputStream is = getAssets().open("city.db");
                 db.getParentFile().mkdirs();

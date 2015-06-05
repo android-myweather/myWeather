@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:text="星期四"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
 
         <ImageView
             android:id="@+id/weather_image2"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="-5℃~10℃"
             android:textColor="#ffffff"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/weather2"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:text="多云转晴"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/wind2"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:text="微风 3-4级"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:text="星期五"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
 
         <ImageView
             android:id="@+id/weather_image3"
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:text="-5℃~10℃"
             android:textColor="#ffffff"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/weather3"
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:text="多云转晴"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/wind3"
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:text="微风 3-4级"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:text="星期六"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
 
         <ImageView
             android:id="@+id/weather_image4"
@@ -129,7 +129,7 @@
             android:layout_height="wrap_content"
             android:text="-5℃~10℃"
             android:textColor="#ffffff"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/weather4"
@@ -137,7 +137,7 @@
             android:layout_height="wrap_content"
             android:text="多云转晴"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/wind4"
@@ -145,6 +145,6 @@
             android:layout_height="wrap_content"
             android:text="微风 3-4级"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
     </LinearLayout>
 </LinearLayout>
