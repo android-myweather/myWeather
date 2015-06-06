@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#eeeeee"
-    tools:context="pku.ss.kevin.myweather.CityManager">
+    tools:context="pku.ss.kevin.myweather.CityActivity">
 
     <RelativeLayout
         android:id="@+id/current_city"

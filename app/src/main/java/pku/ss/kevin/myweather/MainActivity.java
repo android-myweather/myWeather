@@ -14,6 +14,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -27,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
+import pku.ss.kevin.app.MyApplication;
 import pku.ss.kevin.bean.TodayWeather;
 import pku.ss.kevin.bean.Weather;
 import pku.ss.kevin.bean.WeatherInfo;
@@ -44,6 +50,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
     private ProgressBar updateProgress;
     private ImageView updateImg;
+    private ImageView locateImg;
 
     private TextView titleCityTv;
     private TextView cityTv;
@@ -93,6 +100,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     private TextView weather4;
     private TextView wind4;
 
+    public LocationClient mLocationClient = null;
+    public BDLocationListener myListener = new MyLocationListener();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +115,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         updateProgress = (ProgressBar) findViewById(R.id.title_update_progress);
         ImageView shareImg = (ImageView) findViewById(R.id.title_share);
         shareImg.setOnClickListener(this);
+        locateImg = (ImageView)findViewById(R.id.title_location);
+        locateImg.setOnClickListener(this);
 
         initForecastViews();
         initDots();
@@ -114,6 +126,15 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         forecastVp.setOnPageChangeListener(this);
 
         initView();
+
+        mLocationClient = new LocationClient(MyApplication.getInstance());     //声明LocationClient类
+        mLocationClient.registerLocationListener( myListener );    //注册监听函数
+
+        LocationClientOption option = new LocationClientOption();
+        option.setOpenGps(true);
+        option.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);//设置定位模式
+        option.setIsNeedAddress(true);//返回的定位结果包含地址信息
+        mLocationClient.setLocOption(option);
     }
 
     @Override
@@ -146,8 +167,12 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         lastClick = System.currentTimeMillis();
 
         switch (v.getId()) {
+            case R.id.title_location:
+                mLocationClient.start();
+                mLocationClient.requestLocation();
+                break;
             case R.id.title_city_manager:
-                Intent intent = new Intent(MainActivity.this, CityManager.class);
+                Intent intent = new Intent(MainActivity.this, CityActivity.class);
                 intent.putExtra("name", currentCityName);
                 startActivityForResult(intent, 1);
                 break;
@@ -238,6 +263,37 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             updateImg.setVisibility(View.VISIBLE);
             updateProgress.setVisibility(View.INVISIBLE);
             Toast.makeText(getBaseContext(), "更新成功", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            if (location == null)
+                return;
+            StringBuilder sb = new StringBuilder(256);
+            sb.append("time : ");
+            sb.append(location.getTime());
+            sb.append("\nerror code : ");
+            sb.append(location.getLocType());
+            sb.append("\nlatitude : ");
+            sb.append(location.getLatitude());
+            sb.append("\nlontitude : ");
+            sb.append(location.getLongitude());
+            sb.append("\nradius : ");
+            sb.append(location.getRadius());
+            if (location.getLocType() == BDLocation.TypeGpsLocation) {
+                sb.append("\nspeed : ");
+                sb.append(location.getSpeed());
+                sb.append("\nsatellite : ");
+                sb.append(location.getSatelliteNumber());
+            } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
+                sb.append("\naddr : ");
+                sb.append(location.getAddrStr());
+                titleCityTv.setText(location.getCity());
+            }
+            Log.d(LogUtil.TAG, sb.toString());
         }
     }
 
