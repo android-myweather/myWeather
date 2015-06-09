@@ -107,6 +107,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
+        Log.d("testGit","testGit");
 
         ImageView cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
         cityManagerImg.setOnClickListener(this);
