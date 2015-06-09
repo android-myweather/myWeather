@@ -24,6 +24,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreConnectionPNames;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -107,8 +108,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
-        Log.d("testGit","testGit");
-        Log.d("testGit2","testGit2");
 
         ImageView cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
         cityManagerImg.setOnClickListener(this);
@@ -233,6 +232,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpGet httpGet = new HttpGet(address);
+                httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,1000);//连接时间
+                httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT,1000);//数据传输时间
                 HttpResponse httpResponse = httpClient.execute(httpGet);
                 if (httpResponse.getStatusLine().getStatusCode() == 200) {
                     HttpEntity entity = httpResponse.getEntity();
@@ -249,6 +250,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Toast.makeText(MainActivity.this,"网络超时",Toast.LENGTH_SHORT).show();
             }
 //            publishProgress();
             return weather;
