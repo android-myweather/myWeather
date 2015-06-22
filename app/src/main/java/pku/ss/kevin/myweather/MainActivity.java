@@ -65,6 +65,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     private TextView temperatureTv;
     private TextView weatherTv;
     private TextView windTv;
+    private TextView todayTemperatureTv;
 
     private ViewPager forecastVp;
     private List<View> forecastViews;
@@ -118,6 +119,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         shareImg.setOnClickListener(this);
         locateImg = (ImageView)findViewById(R.id.title_location);
         locateImg.setOnClickListener(this);
+
+        todayTemperatureTv = (TextView)findViewById(R.id.today_temperature);
 
         initForecastViews();
         initDots();
@@ -358,6 +361,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             temperatureTv.setText("N/A");
             weatherTv.setText("N/A");
             windTv.setText("N/A");
+            todayTemperatureTv.setText("N/A");
             Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
         } else {
             SharedPreferences sharedPreferences = getSharedPreferences("city", MODE_PRIVATE);
@@ -401,6 +405,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             weatherTv.setText(todayWeather.getDayType() + "转" + todayWeather.getNightType());
         weatherImg.setImageResource(UIUtil.getWeatherImg(todayWeather.getDayType()));
         windTv.setText(todayWeather.getWindDirection() + " " + todayWeather.getWindStrength());
+        todayTemperatureTv.setText("温度："+todayWeather.getTemperature()+"℃");
     }
 
     private void updateWeatherForecastView(WeatherInfo weather) {

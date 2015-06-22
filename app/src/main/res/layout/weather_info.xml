@@ -55,6 +55,17 @@
                     android:text="湿度:75%"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/today_temperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/update_time"
+                    android:layout_toRightOf="@id/humidity"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="5dp"
+                    android:text="温度:20℃"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp" />
             </RelativeLayout>
 
             <RelativeLayout
