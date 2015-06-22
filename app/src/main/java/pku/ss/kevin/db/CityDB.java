@@ -51,4 +51,12 @@ public class CityDB {
         c.close();
         return list;
     }
+
+    public String getCityCode(String city) {
+        Cursor c = db.rawQuery("select number from " + CITY_TABLE_NAME + " where city='" + city + "'", null);
+        c.moveToFirst();
+        String number = c.getString(c.getColumnIndex("number"));
+        c.close();
+        return number;
+    }
 }

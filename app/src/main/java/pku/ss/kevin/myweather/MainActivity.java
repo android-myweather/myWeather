@@ -37,6 +37,7 @@ import pku.ss.kevin.app.MyApplication;
 import pku.ss.kevin.bean.TodayWeather;
 import pku.ss.kevin.bean.Weather;
 import pku.ss.kevin.bean.WeatherInfo;
+import pku.ss.kevin.db.CityDB;
 import pku.ss.kevin.util.LogUtil;
 import pku.ss.kevin.util.NetUtil;
 import pku.ss.kevin.util.ParseUtil;
@@ -117,10 +118,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         updateProgress = (ProgressBar) findViewById(R.id.title_update_progress);
         ImageView shareImg = (ImageView) findViewById(R.id.title_share);
         shareImg.setOnClickListener(this);
-        locateImg = (ImageView)findViewById(R.id.title_location);
+        locateImg = (ImageView) findViewById(R.id.title_location);
         locateImg.setOnClickListener(this);
 
-        todayTemperatureTv = (TextView)findViewById(R.id.today_temperature);
+        todayTemperatureTv = (TextView) findViewById(R.id.today_temperature);
 
         initForecastViews();
         initDots();
@@ -132,7 +133,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         initView();
 
         mLocationClient = new LocationClient(MyApplication.getInstance());     //声明LocationClient类
-        mLocationClient.registerLocationListener( myListener );    //注册监听函数
+        mLocationClient.registerLocationListener(myListener);    //注册监听函数
 
         LocationClientOption option = new LocationClientOption();
         option.setOpenGps(true);
@@ -235,8 +236,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpGet httpGet = new HttpGet(address);
-                httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,1000);//连接时间
-                httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT,1000);//数据传输时间
+                httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 1000);//连接时间
+                httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 1000);//数据传输时间
                 HttpResponse httpResponse = httpClient.execute(httpGet);
                 if (httpResponse.getStatusLine().getStatusCode() == 200) {
                     HttpEntity entity = httpResponse.getEntity();
@@ -253,7 +254,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(MainActivity.this,"网络超时",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "网络超时", Toast.LENGTH_SHORT).show();
             }
 //            publishProgress();
             return weather;
@@ -298,7 +299,15 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                 sb.append("\naddr : ");
                 sb.append(location.getAddrStr());
-                titleCityTv.setText(location.getCity());
+
+                // 刷新界面
+                String city = location.getCity();
+                city = city.substring(0, city.length() - 1);
+                if (NetUtil.getNetworkState(MainActivity.this) != NetUtil.NETWORK_NONE) {
+                    new UpdateWeatherBackground().execute(new CityDB(MainActivity.this).getCityCode((city)));
+                } else {
+                    Toast.makeText(MainActivity.this, "无法连接网络", Toast.LENGTH_LONG).show();
+                }
             }
             Log.d(LogUtil.TAG, sb.toString());
         }
@@ -405,7 +414,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             weatherTv.setText(todayWeather.getDayType() + "转" + todayWeather.getNightType());
         weatherImg.setImageResource(UIUtil.getWeatherImg(todayWeather.getDayType()));
         windTv.setText(todayWeather.getWindDirection() + " " + todayWeather.getWindStrength());
-        todayTemperatureTv.setText("温度："+todayWeather.getTemperature()+"℃");
+        todayTemperatureTv.setText("温度：" + todayWeather.getTemperature() + "℃");
     }
 
     private void updateWeatherForecastView(WeatherInfo weather) {
