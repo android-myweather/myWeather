@@ -47,7 +47,7 @@ public class SelectCity extends Activity implements View.OnClickListener, Adapte
         cityListView.setOnItemClickListener(this);
         EditText searchEdit = (EditText) findViewById(R.id.search_edit);
         searchEdit.addTextChangedListener(this);
-        final List<City> cityList = myApp.getCityDB().getAllCity();
+        cityList = myApp.getCityDB().getAllCity();
 //        for (City city : myApp.getCityList()){
 //            cityList.add(city);
 //        }
