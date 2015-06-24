@@ -41,6 +41,10 @@
             android:name=".CityActivity"
             android:label="CityManager" >
         </activity>
+        <activity
+            android:name=".SelectCity"
+            android:label="CityManager" >
+        </activity>
 
         <service
             android:name=".UpdateService"

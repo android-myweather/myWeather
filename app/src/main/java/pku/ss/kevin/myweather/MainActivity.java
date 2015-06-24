@@ -180,7 +180,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 mLocationClient.requestLocation();
                 break;
             case R.id.title_city_manager:
-                Intent intent = new Intent(MainActivity.this, CityActivity.class);
+//                Intent intent = new Intent(MainActivity.this, CityActivity.class);
+                Intent intent = new Intent(MainActivity.this, SelectCity.class);
                 intent.putExtra("name", currentCityName);
                 startActivityForResult(intent, 1);
                 break;
@@ -262,7 +263,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(MainActivity.this, "网络超时", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(MainActivity.this, "网络超时", Toast.LENGTH_SHORT).show();
             }
 //            publishProgress();
             return weather;
@@ -274,11 +275,13 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         }
 
         protected void onPostExecute(WeatherInfo result) {
-            updateWeatherView(result);
-            Log.d(LogUtil.TAG, "更新完成");
-            updateImg.setVisibility(View.VISIBLE);
-            updateProgress.setVisibility(View.INVISIBLE);
-            Toast.makeText(getBaseContext(), "更新成功", Toast.LENGTH_SHORT).show();
+            if(result != null){
+                updateWeatherView(result);
+                Log.d(LogUtil.TAG, "更新完成");
+                updateImg.setVisibility(View.VISIBLE);
+                updateProgress.setVisibility(View.INVISIBLE);
+                Toast.makeText(getBaseContext(), "更新成功", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
