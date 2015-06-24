@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -47,6 +48,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
     private String currentCityName;
     private String currentCityCode;
+    private String zhishu="";
 
     private long lastClick;
 
@@ -120,7 +122,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         shareImg.setOnClickListener(this);
         locateImg = (ImageView) findViewById(R.id.title_location);
         locateImg.setOnClickListener(this);
-
+        Button recommend_button =(Button)findViewById(R.id.recommend_button);
+        recommend_button.setOnClickListener(this);
         todayTemperatureTv = (TextView) findViewById(R.id.today_temperature);
 
         initForecastViews();
@@ -197,6 +200,11 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                         + weatherTv.getText() + " " + temperatureTv.getText());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(Intent.createChooser(intent, getTitle()));
+                break;
+            case R.id.recommend_button:
+                Intent intent1 = new Intent(MainActivity.this, RecommendActivity.class);
+                intent1.putExtra("name", zhishu);
+                startActivityForResult(intent1, 1);
                 break;
         }
     }
@@ -415,6 +423,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         weatherImg.setImageResource(UIUtil.getWeatherImg(todayWeather.getDayType()));
         windTv.setText(todayWeather.getWindDirection() + " " + todayWeather.getWindStrength());
         todayTemperatureTv.setText("温度：" + todayWeather.getTemperature() + "℃");
+        int j=0;
+        for(j=0;j<4;j++) {
+            zhishu = zhishu+todayWeather.getName(j) + ":" + todayWeather.getValue(j) + "\n" + todayWeather.getDetail(j) + "\n\n";
+        }
     }
 
     private void updateWeatherForecastView(WeatherInfo weather) {

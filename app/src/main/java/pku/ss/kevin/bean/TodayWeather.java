@@ -8,6 +8,9 @@ public class TodayWeather extends Weather{
     protected String humidity;
     protected String pm25;
     protected String quality;
+    protected String name[];
+    protected String value[];
+    protected String detail[];
 
     public TodayWeather() {
         super();
@@ -17,6 +20,24 @@ public class TodayWeather extends Weather{
         humidity = "N/A";
         pm25 = "N/A";
         quality = "N/A";
+        name=new String[5];
+        name[0]= "N/A";
+        name[1]= "N/A";
+        name[2]= "N/A";
+        name[3]= "N/A";
+        name[4]= "N/A";
+        value=new String[5];
+        value[0]= "N/A";
+        value[1]= "N/A";
+        value[2]= "N/A";
+        value[3]= "N/A";
+        value[4]= "N/A";
+        detail=new String[5];
+        detail[0]="N/A";
+        detail[1]="N/A";
+        detail[2]="N/A";
+        detail[3]="N/A";
+        detail[4]="N/A";
     }
 
     @Override
@@ -52,6 +73,16 @@ public class TodayWeather extends Weather{
         return quality;
     }
 
+    public String getName(int i) {
+        return name[i];
+    }
+
+    public String getValue(int i) {
+        return value[i];
+    }
+
+    public String getDetail(int i) { return detail[i]; }
+
     public void setCity(String city) {
         this.city = city;
     }
@@ -74,6 +105,18 @@ public class TodayWeather extends Weather{
 
     public void setQuality(String quality) {
         this.quality = quality;
+    }
+
+    public void setName(int i,String name) {
+        this.name[i] = name;
+    }
+
+    public void setValue(int i,String value) {
+        this.value[i] = value;
+    }
+
+    public void setDetail(int i,String detail) {
+        this.detail[i] = detail;
     }
 
 }

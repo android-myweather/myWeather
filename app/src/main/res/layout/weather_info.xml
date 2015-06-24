@@ -118,6 +118,15 @@
 
             </RelativeLayout>
 
+            <Button
+                android:layout_width="130px"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/air"
+                android:text ="生\n活\n建\n议"
+                android:id="@+id/recommend_button"
+                />
+
             <ImageView
                 android:id="@+id/weather_image"
                 android:layout_width="wrap_content"

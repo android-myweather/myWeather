@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#eeeeee"
+    tools:context="pku.ss.kevin.myweather.RecommendActivity">
+
+    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/recommend"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="#cd2626">
+
+        <TextView
+            android:id="@+id/recommend_name"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:text="生活建议"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/recommend_back"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/base_action_bar_back_normal" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@id/recommend_back"
+            android:background="#A71717"
+            android:gravity="center" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/recommend"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:background="@drawable/biz_plugin_weather_shenzhen_bg">
+        <TextView
+            android:id="@+id/name1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="生活建议"
+            android:textColor="#ffffff"
+            android:textSize="22sp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"/>
+    </RelativeLayout>
+</RelativeLayout>
