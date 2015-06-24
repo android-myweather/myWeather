@@ -28,6 +28,13 @@
             android:value="nhvZl9nCV2d3OgKzAhuK4nX9" />
 
         <activity
+            android:name=".FirstActivity"
+            android:label="MyWeather"
+            android:screenOrientation="portrait" >
+
+        </activity>
+
+        <activity
             android:name=".MainActivity"
             android:label="MyWeather"
             android:screenOrientation="portrait" >

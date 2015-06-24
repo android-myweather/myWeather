@@ -55,6 +55,7 @@
                     android:text="湿度:75%"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/today_temperature"
                     android:layout_width="wrap_content"
@@ -118,14 +119,14 @@
 
             </RelativeLayout>
 
-            <Button
-                android:layout_width="130px"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/air"
-                android:text ="生\n活\n建\n议"
-                android:id="@+id/recommend_button"
-                />
+            <!--<Button-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_below="@id/air"-->
+                <!--android:text="生\n活\n建\n议"-->
+                <!--android:id="@+id/recommend_button" />-->
 
             <ImageView
                 android:id="@+id/weather_image"
@@ -185,6 +186,16 @@
                 android:textSize="20sp"
                 android:layout_alignLeft="@id/today"
                 android:layout_below="@id/weather" />
+
+            <TextView
+                android:layout_marginLeft="15dp"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/wind"
+                android:layout_toRightOf="@id/wind"
+                android:text="生活建议"
+                android:id="@+id/recommend_button" />
         </RelativeLayout>
 
         <LinearLayout

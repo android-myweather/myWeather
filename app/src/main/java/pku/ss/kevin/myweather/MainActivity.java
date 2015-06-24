@@ -1,6 +1,7 @@
 package pku.ss.kevin.myweather;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -48,7 +49,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
     private String currentCityName;
     private String currentCityCode;
-    private String zhishu="";
+    private String zhishu = "";
 
     private long lastClick;
 
@@ -113,6 +114,20 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
 
+        SharedPreferences preferences = getSharedPreferences("phone", Context.MODE_PRIVATE);
+        //判断是不是首次运行
+        if (preferences.getBoolean("firststart", true)) {
+            SharedPreferences.Editor editor = preferences.edit();
+            //将登录标志位设置为false，下次登录时不在显示首次登录界面
+            editor.putBoolean("firststart", false);
+            editor.commit();
+            Intent intent = new Intent();
+//            Intent intent = new Intent("pku.ss.kevin.myweather.FirstActivity");
+            intent.setClass(getApplicationContext(),FirstActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         ImageView cityManagerImg = (ImageView) findViewById(R.id.title_city_manager);
         cityManagerImg.setOnClickListener(this);
         updateImg = (ImageView) findViewById(R.id.title_update);
@@ -122,7 +137,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         shareImg.setOnClickListener(this);
         locateImg = (ImageView) findViewById(R.id.title_location);
         locateImg.setOnClickListener(this);
-        Button recommend_button =(Button)findViewById(R.id.recommend_button);
+        TextView recommend_button = (TextView) findViewById(R.id.recommend_button);
         recommend_button.setOnClickListener(this);
         todayTemperatureTv = (TextView) findViewById(R.id.today_temperature);
 
@@ -134,6 +149,12 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         forecastVp.setOnPageChangeListener(this);
 
         initView();
+        Intent intent = getIntent();
+        if (intent != null && intent.getStringExtra("code") != null && intent.getStringExtra("name") != null) {
+            currentCityCode = intent.getStringExtra("code");
+            currentCityName = intent.getStringExtra("name");
+            new UpdateWeatherBackground().execute(currentCityCode);
+        }
 
         mLocationClient = new LocationClient(MyApplication.getInstance());     //声明LocationClient类
         mLocationClient.registerLocationListener(myListener);    //注册监听函数
@@ -161,7 +182,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         if (requestCode == 1 && resultCode == RESULT_OK) {
             currentCityCode = data.getStringExtra("code");
             currentCityName = data.getStringExtra("name");
-//            updateTodayWeather(currentCityCode);
             new UpdateWeatherBackground().execute(currentCityCode);
         }
     }
@@ -263,7 +283,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-               // Toast.makeText(MainActivity.this, "网络超时", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MainActivity.this, "网络超时", Toast.LENGTH_SHORT).show();
             }
 //            publishProgress();
             return weather;
@@ -275,7 +295,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         }
 
         protected void onPostExecute(WeatherInfo result) {
-            if(result != null){
+            if (result != null) {
                 updateWeatherView(result);
                 Log.d(LogUtil.TAG, "更新完成");
                 updateImg.setVisibility(View.VISIBLE);
@@ -426,9 +446,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         weatherImg.setImageResource(UIUtil.getWeatherImg(todayWeather.getDayType()));
         windTv.setText(todayWeather.getWindDirection() + " " + todayWeather.getWindStrength());
         todayTemperatureTv.setText("温度：" + todayWeather.getTemperature() + "℃");
-        int j=0;
-        for(j=0;j<4;j++) {
-            zhishu = zhishu+todayWeather.getName(j) + ":" + todayWeather.getValue(j) + "\n" + todayWeather.getDetail(j) + "\n\n";
+        int j = 0;
+        for (j = 0; j < 4; j++) {
+            zhishu = zhishu + todayWeather.getName(j) + ":" + todayWeather.getValue(j) + "\n" + todayWeather.getDetail(j) + "\n\n";
         }
     }
 
@@ -482,7 +502,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             weather_1.setText(yesterday.getDayType());
         else
             weather_1.setText(yesterday.getDayType() + "转" + yesterday.getNightType());
-        wind_1.setText(yesterday.getWindDirection() + " " + yesterday.getWindStrength());
+//        wind_1.setText(yesterday.getWindDirection() + " " + yesterday.getWindStrength());
+        wind_1.setText(yesterday.getWindDirection());
 
         date0.setText(weather.getDate());
         weather_image0.setImageResource(UIUtil.getWeatherImg(weather.getDayType()));
@@ -491,7 +512,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             weather0.setText(weather.getDayType());
         else
             weather0.setText(weather.getDayType() + "转" + weather.getNightType());
-        wind0.setText(weather.getWindDirection() + " " + weather.getWindStrength());
+//        wind0.setText(weather.getWindDirection() + " " + weather.getWindStrength());
+        wind0.setText(weather.getWindDirection());
 
         Weather day1 = weather.getDay1();
         date1.setText(day1.getDate());
@@ -501,7 +523,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             weather1.setText(day1.getDayType());
         else
             weather1.setText(day1.getDayType() + "转" + day1.getNightType());
-        wind1.setText(day1.getWindDirection() + " " + day1.getWindStrength());
+//        wind1.setText(day1.getWindDirection() + " " + day1.getWindStrength());
+        wind1.setText(weather.getWindDirection());
 
         Weather day2 = weather.getDay2();
         date2.setText(day2.getDate());
@@ -511,7 +534,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             weather2.setText(day2.getDayType());
         else
             weather2.setText(day2.getDayType() + "转" + day2.getNightType());
-        wind2.setText(day2.getWindDirection() + " " + day2.getWindStrength());
+//        wind2.setText(day2.getWindDirection() + " " + day2.getWindStrength());
+        wind2.setText(weather.getWindDirection());
 
         Weather day3 = weather.getDay3();
         date3.setText(day3.getDate());
@@ -521,7 +545,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             weather3.setText(day3.getDayType());
         else
             weather3.setText(day3.getDayType() + "转" + day3.getNightType());
-        wind3.setText(day3.getWindDirection() + " " + day3.getWindStrength());
+//        wind3.setText(day3.getWindDirection() + " " + day3.getWindStrength());
+        wind3.setText(weather.getWindDirection());
 
         Weather day4 = weather.getDay4();
         date4.setText(day4.getDate());
@@ -531,7 +556,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             weather4.setText(day4.getDayType());
         else
             weather4.setText(day4.getDayType() + "转" + day4.getNightType());
-        wind4.setText(day4.getWindDirection() + " " + day4.getWindStrength());
+//        wind4.setText(day4.getWindDirection() + " " + day4.getWindStrength());
+        wind4.setText(weather.getWindDirection());
     }
 
 }
