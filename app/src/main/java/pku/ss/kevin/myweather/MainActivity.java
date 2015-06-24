@@ -250,7 +250,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                         response.append(str);
                     }
                     String responseStr = response.toString();
-                    weather = ParseUtil.queryTodayWeather(responseStr);
+                    weather = ParseUtil.queryWeatherInfo(responseStr);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -419,54 +419,11 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
     private void updateWeatherForecastView(WeatherInfo weather) {
         //*********************假6日天气信息********************
-        date_1.setText("22日星期一");
-        weather_image_1.setImageResource(R.drawable.biz_plugin_weather_duoyun);
-        temperature_1.setText("22℃~31℃");
-        weather_1.setText("多云转雷阵雨");
-        wind_1.setText("无持续风向1级");
-
-        date0.setText(weather.getDate());
-        weather_image0.setImageResource(UIUtil.getWeatherImg(weather.getDayType()));
-        temperature0.setText(weather.getLow() + "~" + weather.getHigh());
-        if (weather.getDayType().equals(weather.getNightType()))
-            weather0.setText(weather.getDayType());
-        else
-            weather0.setText(weather.getDayType() + "转" + weather.getNightType());
-        wind0.setText(weather.getWindDirection() + " " + weather.getWindStrength());
-
-        date1.setText("24日星期三");
-        weather_image1.setImageResource(R.drawable.biz_plugin_weather_leizhenyu);
-        temperature1.setText("22℃~30℃");
-        weather1.setText("雷阵雨");
-        wind1.setText("无持续风向1级");
-
-        date2.setText("25日星期四");
-        weather_image2.setImageResource(R.drawable.biz_plugin_weather_leizhenyu);
-        temperature2.setText("22℃~31℃");
-        weather2.setText("雷阵雨转阴");
-        wind2.setText("无持续风向1级");
-
-        date3.setText("26日星期五");
-        weather_image3.setImageResource(R.drawable.biz_plugin_weather_yin);
-        temperature3.setText("22℃~32℃");
-        weather3.setText("阴");
-        wind3.setText("无持续风向1级");
-
-        date4.setText("27日星期六");
-        weather_image4.setImageResource(R.drawable.biz_plugin_weather_qing);
-        temperature4.setText("22℃~33℃");
-        weather4.setText("晴");
-        wind4.setText("无持续风向1级");
-        //***************真实6日天气信息（需完善）************************
-//        Weather yesterday = weather.getYesterday();
-//        date_1.setText(yesterday.getDate());
-//        weather_image_1.setImageResource(UIUtil.getWeatherImg(yesterday.getDayType()));
-//        temperature_1.setText(yesterday.getLow() + "~" + yesterday.getHigh());
-//        if (yesterday.getDayType().equals(yesterday.getNightType()))
-//            weather_1.setText(yesterday.getDayType());
-//        else
-//            weather_1.setText(yesterday.getDayType() + "转" + yesterday.getNightType());
-//        wind_1.setText(yesterday.getWindDirection() + " " + yesterday.getWindStrength());
+//        date_1.setText("22日星期一");
+//        weather_image_1.setImageResource(R.drawable.biz_plugin_weather_duoyun);
+//        temperature_1.setText("22℃~31℃");
+//        weather_1.setText("多云转雷阵雨");
+//        wind_1.setText("无持续风向1级");
 //
 //        date0.setText(weather.getDate());
 //        weather_image0.setImageResource(UIUtil.getWeatherImg(weather.getDayType()));
@@ -477,45 +434,89 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 //            weather0.setText(weather.getDayType() + "转" + weather.getNightType());
 //        wind0.setText(weather.getWindDirection() + " " + weather.getWindStrength());
 //
-//        Weather day1 = weather.getDay1();
-//        date1.setText(day1.getDate());
-//        weather_image1.setImageResource(UIUtil.getWeatherImg(day1.getDayType()));
-//        temperature1.setText(day1.getLow() + "~" + day1.getHigh());
-//        if (day1.getDayType().equals(day1.getNightType()))
-//            weather1.setText(day1.getDayType());
-//        else
-//            weather1.setText(day1.getDayType() + "转" + day1.getNightType());
-//        wind1.setText(day1.getWindDirection() + " " + day1.getWindStrength());
+//        date1.setText("24日星期三");
+//        weather_image1.setImageResource(R.drawable.biz_plugin_weather_leizhenyu);
+//        temperature1.setText("22℃~30℃");
+//        weather1.setText("雷阵雨");
+//        wind1.setText("无持续风向1级");
 //
-//        Weather day2 = weather.getDay1();
-//        date2.setText(day2.getDate());
-//        weather_image2.setImageResource(UIUtil.getWeatherImg(day2.getDayType()));
-//        temperature2.setText(day2.getLow() + "~" + day2.getHigh());
-//        if (day2.getDayType().equals(day2.getNightType()))
-//            weather2.setText(day2.getDayType());
-//        else
-//            weather2.setText(day2.getDayType() + "转" + day2.getNightType());
-//        wind2.setText(day2.getWindDirection() + " " + day2.getWindStrength());
+//        date2.setText("25日星期四");
+//        weather_image2.setImageResource(R.drawable.biz_plugin_weather_leizhenyu);
+//        temperature2.setText("22℃~31℃");
+//        weather2.setText("雷阵雨转阴");
+//        wind2.setText("无持续风向1级");
 //
-//        Weather day3 = weather.getDay1();
-//        date3.setText(day3.getDate());
-//        weather_image3.setImageResource(UIUtil.getWeatherImg(day3.getDayType()));
-//        temperature3.setText(day3.getLow() + "~" + day3.getHigh());
-//        if (day3.getDayType().equals(day3.getNightType()))
-//            weather3.setText(day3.getDayType());
-//        else
-//            weather3.setText(day3.getDayType() + "转" + day3.getNightType());
-//        wind3.setText(day3.getWindDirection() + " " + day3.getWindStrength());
+//        date3.setText("26日星期五");
+//        weather_image3.setImageResource(R.drawable.biz_plugin_weather_yin);
+//        temperature3.setText("22℃~32℃");
+//        weather3.setText("阴");
+//        wind3.setText("无持续风向1级");
 //
-//        Weather day4 = weather.getDay1();
-//        date4.setText(day4.getDate());
-//        weather_image4.setImageResource(UIUtil.getWeatherImg(day4.getDayType()));
-//        temperature4.setText(day4.getLow() + "~" + day4.getHigh());
-//        if (day4.getDayType().equals(day4.getNightType()))
-//            weather4.setText(day4.getDayType());
-//        else
-//            weather4.setText(day4.getDayType() + "转" + day4.getNightType());
-//        wind4.setText(day4.getWindDirection() + " " + day4.getWindStrength());
+//        date4.setText("27日星期六");
+//        weather_image4.setImageResource(R.drawable.biz_plugin_weather_qing);
+//        temperature4.setText("22℃~33℃");
+//        weather4.setText("晴");
+//        wind4.setText("无持续风向1级");
+
+        //***************真实6日天气信息（需完善）************************
+        Weather yesterday = weather.getYesterday();
+        date_1.setText(yesterday.getDate());
+        weather_image_1.setImageResource(UIUtil.getWeatherImg(yesterday.getDayType()));
+        temperature_1.setText(yesterday.getLow() + "~" + yesterday.getHigh());
+        if (yesterday.getDayType().equals(yesterday.getNightType()))
+            weather_1.setText(yesterday.getDayType());
+        else
+            weather_1.setText(yesterday.getDayType() + "转" + yesterday.getNightType());
+        wind_1.setText(yesterday.getWindDirection() + " " + yesterday.getWindStrength());
+
+        date0.setText(weather.getDate());
+        weather_image0.setImageResource(UIUtil.getWeatherImg(weather.getDayType()));
+        temperature0.setText(weather.getLow() + "~" + weather.getHigh());
+        if (weather.getDayType().equals(weather.getNightType()))
+            weather0.setText(weather.getDayType());
+        else
+            weather0.setText(weather.getDayType() + "转" + weather.getNightType());
+        wind0.setText(weather.getWindDirection() + " " + weather.getWindStrength());
+
+        Weather day1 = weather.getDay1();
+        date1.setText(day1.getDate());
+        weather_image1.setImageResource(UIUtil.getWeatherImg(day1.getDayType()));
+        temperature1.setText(day1.getLow() + "~" + day1.getHigh());
+        if (day1.getDayType().equals(day1.getNightType()))
+            weather1.setText(day1.getDayType());
+        else
+            weather1.setText(day1.getDayType() + "转" + day1.getNightType());
+        wind1.setText(day1.getWindDirection() + " " + day1.getWindStrength());
+
+        Weather day2 = weather.getDay2();
+        date2.setText(day2.getDate());
+        weather_image2.setImageResource(UIUtil.getWeatherImg(day2.getDayType()));
+        temperature2.setText(day2.getLow() + "~" + day2.getHigh());
+        if (day2.getDayType().equals(day2.getNightType()))
+            weather2.setText(day2.getDayType());
+        else
+            weather2.setText(day2.getDayType() + "转" + day2.getNightType());
+        wind2.setText(day2.getWindDirection() + " " + day2.getWindStrength());
+
+        Weather day3 = weather.getDay3();
+        date3.setText(day3.getDate());
+        weather_image3.setImageResource(UIUtil.getWeatherImg(day3.getDayType()));
+        temperature3.setText(day3.getLow() + "~" + day3.getHigh());
+        if (day3.getDayType().equals(day3.getNightType()))
+            weather3.setText(day3.getDayType());
+        else
+            weather3.setText(day3.getDayType() + "转" + day3.getNightType());
+        wind3.setText(day3.getWindDirection() + " " + day3.getWindStrength());
+
+        Weather day4 = weather.getDay4();
+        date4.setText(day4.getDate());
+        weather_image4.setImageResource(UIUtil.getWeatherImg(day4.getDayType()));
+        temperature4.setText(day4.getLow() + "~" + day4.getHigh());
+        if (day4.getDayType().equals(day4.getNightType()))
+            weather4.setText(day4.getDayType());
+        else
+            weather4.setText(day4.getDayType() + "转" + day4.getNightType());
+        wind4.setText(day4.getWindDirection() + " " + day4.getWindStrength());
     }
 
 }
