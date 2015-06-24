@@ -25,6 +25,9 @@ public class ParseUtil {
             int lowCount = 0;
             int highCount = 0;
             int typeCount = 0;
+            int zhishuNameCount=0;
+            int zhishuValueCount=0;
+            int zhishuDetailCount=0;
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 switch (eventType) {
                     case XmlPullParser.START_DOCUMENT:
@@ -84,6 +87,21 @@ public class ParseUtil {
                                 else if (typeCount == 1)
                                     todayWeather.setNightType(xmlPullParser.nextText());
                                 typeCount++;
+                                break;
+                            case "name":
+                                if (zhishuNameCount<5)
+                                    todayWeather.setName(zhishuNameCount,xmlPullParser.nextText());
+                                zhishuNameCount++;
+                                break;
+                            case "value":
+                                if (zhishuValueCount<5)
+                                    todayWeather.setValue(zhishuValueCount,xmlPullParser.nextText());
+                                zhishuValueCount++;
+                                break;
+                            case "detail":
+                                if (zhishuDetailCount<5)
+                                    todayWeather.setDetail(zhishuDetailCount,xmlPullParser.nextText());
+                                zhishuDetailCount++;
                                 break;
                         }
                         break;
